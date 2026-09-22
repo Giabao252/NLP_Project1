@@ -1,0 +1,14 @@
+{
+  "procedure_version": 2,
+  "execution": "Current conversation LLM application; not an isolated API call",
+  "model": "GPT-6 family; exact serving snapshot and sampling settings unavailable",
+  "audience_age": 12,
+  "blind": false,
+  "limitations": [
+    "The same assistant authored the corpus and has seen gold annotations.",
+    "Opaque IDs do not remove prior conversation exposure."
+  ],
+  "prompt_sha256": "21e9049bcf7b837503fd726f386b771cedafd6943a3fe52f9fc31f26303775b1",
+  "inputs_sha256": "fbe78bfa14c317ad50974e2354ef973301023f1c582cae4969e541f26e682015",
+  "item_specific_hints": []
+}

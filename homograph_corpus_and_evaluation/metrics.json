@@ -1,0 +1,88 @@
+{
+  "corpus": {
+    "n": 50,
+    "tp": 19,
+    "fp": 0,
+    "tn": 30,
+    "fn": 1,
+    "accuracy": 0.98,
+    "precision": 1.0,
+    "recall": 0.95,
+    "f1": 0.9743589743589743,
+    "specificity": 1.0,
+    "false_positive_rate": 0.0,
+    "balanced_accuracy": 0.975,
+    "macro_f1": 0.9789827658680117,
+    "strict_accuracy": 0.98,
+    "abstentions": 1,
+    "coverage": 0.98,
+    "answered_only_accuracy": 1.0,
+    "paired_success_count": 19,
+    "pair_count": 20,
+    "paired_success_rate": 0.95,
+    "target_localization_including_abstentions": 1.0,
+    "subgroups": {
+      "joke": {
+        "correct": 19,
+        "total": 20
+      },
+      "additional_non_joke": {
+        "correct": 10,
+        "total": 10
+      },
+      "modified_non_joke": {
+        "correct": 20,
+        "total": 20
+      }
+    },
+    "errors": [
+      {
+        "id": "J07",
+        "run_id": "T006",
+        "status": "uncertain",
+        "reason": "The intended wordplay is recognizable, but a noun meaning a dry region does not explain what desert his investors would mean as an action. The travel interpretation requires supplying an unstated move to the desert. Under the contextual-compatibility rule, the intended joke needs review."
+      }
+    ],
+    "age_recommendations": {
+      "provisionally_suitable": 13,
+      "explain_vocabulary_first": 6,
+      "review_content": 1
+    },
+    "scope": "Non-blind in-chat LLM pilot. Unknown sense-specific AoA; no independent explanation or age accuracy."
+  },
+  "instructor_diagnostics": {
+    "n": 7,
+    "tp": 4,
+    "fp": 0,
+    "tn": 3,
+    "fn": 0,
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "specificity": 1.0,
+    "false_positive_rate": 0.0,
+    "balanced_accuracy": 1.0,
+    "macro_f1": 1.0,
+    "strict_accuracy": 1.0,
+    "abstentions": 0,
+    "coverage": 1.0,
+    "answered_only_accuracy": 1.0,
+    "paired_success_count": 0,
+    "pair_count": 0,
+    "paired_success_rate": 0.0,
+    "target_localization_including_abstentions": null,
+    "subgroups": {
+      "diagnostic": {
+        "correct": 7,
+        "total": 7
+      }
+    },
+    "errors": [],
+    "age_recommendations": {
+      "explain_vocabulary_first": 2,
+      "provisionally_suitable": 2
+    },
+    "scope": "Non-blind in-chat LLM pilot. Unknown sense-specific AoA; no independent explanation or age accuracy."
+  }
+}
