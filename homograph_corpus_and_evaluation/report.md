@@ -1,5 +1,7 @@
 # Detecting age-appropriate homographic wordplay
 
+> Revision note: This report's saved run and scores used version 2, now archived in llm_procedure_v2.md. The active llm_procedure.md is version 3, with precise definitions, shorter decision rules, and separate age-comprehension assessment. See execution.md. The saved scores do not evaluate the revised prompt.
+
 ## Project summary
 
 This project uses an **explicit LLM prompting procedure**, an approach permitted by the assignment. It replaces the earlier corpus-specific word-and-cue lookup implementation. The prompt defines homographs, contextual support, causal coherence, rejection conditions, age judgments, and a structured output format. It does not contain a fixed list of the corpus's target words, answer mappings, or numerical age thresholds.

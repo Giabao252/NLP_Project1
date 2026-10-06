@@ -66,3 +66,34 @@ For `non_joke`, wordplay comprehension is `not_applicable`. For `invalid_input`,
 ## Run integrity
 
 If a retry receives a hint, record the exact hint, original answer, revised answer, and reason for the change; keep initial and assisted metrics separate. Existing version 2 results do not evaluate this revision. Assess detection on fresh outputs and assess age suitability separately using several texts at several ages; one text repeated across ages does not establish general age-assessment accuracy.
+
+
+## Records to analyze
+
+[
+  {
+    "id": "guts-age-5",
+    "text": "Why don't skeletons fight? Because they have no guts.",
+    "age": 5
+  },
+  {
+    "id": "guts-age-8",
+    "text": "Why don't skeletons fight? Because they have no guts.",
+    "age": 8
+  },
+  {
+    "id": "guts-age-12",
+    "text": "Why don't skeletons fight? Because they have no guts.",
+    "age": 12
+  },
+  {
+    "id": "guts-age-16",
+    "text": "Why don't skeletons fight? Because they have no guts.",
+    "age": 16
+  },
+  {
+    "id": "guts-age-30",
+    "text": "Why don't skeletons fight? Because they have no guts.",
+    "age": 30
+  }
+]

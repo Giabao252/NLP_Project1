@@ -1,0 +1,25 @@
+{
+  "corpus_records": 50,
+  "age_demo_records": 5,
+  "checks_passed": [
+    "complete unique IDs for 50 corpus and five age records",
+    "input ages preserved",
+    "exact quotation and target spans",
+    "two supported senses per accepted joke",
+    "explanation sentence limits",
+    "age-specific reasons and null acquisition data",
+    "consistent joke status and target across ages",
+    "recommendation priority rules",
+    "evaluator completeness and evidence checks"
+  ],
+  "status_counts": {
+    "joke": 18,
+    "non_joke": 30,
+    "uncertain": 2
+  },
+  "uncertain_ids": [
+    "T006",
+    "T021"
+  ],
+  "scope": "Structure and consistency; age suitability has not been independently validated."
+}

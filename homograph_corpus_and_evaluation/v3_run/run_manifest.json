@@ -1,0 +1,38 @@
+{
+  "procedure_version": 3,
+  "execution": "New judgments by the current assistant in this conversation, serialized and validated with Python; corpus scored using evaluate.py score(); no external API call or isolated fresh session",
+  "model": "Current assistant; exact model snapshot and sampling settings unavailable",
+  "corpus_records": 50,
+  "corpus_ages": [
+    12
+  ],
+  "age_demo_records": 5,
+  "age_demo_ages": [
+    5,
+    8,
+    12,
+    16,
+    30
+  ],
+  "blind": false,
+  "item_specific_hints": [],
+  "hashes": {
+    "llm_procedure.md": "3f54af14573a3033935d5a1af5dd7b671fc849f37fc823dddbe9ef50c836f4bb",
+    "run_inputs.jsonl": "9c50c4d33b17e7ab8c32c79950ab1fd97cf4149b942b34f916a54c827e2dda88",
+    "age_demo_inputs.jsonl": "5b2c355f51ab690d78050059eece0116371a47d4d28dbebf083c0b978e83b758",
+    "predictions.jsonl": "64a66811baaeb200f4bee1e5a8037b92a1d897d5ea2eaa086261079fa5a32a20",
+    "age_predictions.jsonl": "25ab0470b057cd7bc8fc7671fed46a288b012aa8eab1ff8bdc183ccb17cd8d7b",
+    "evaluate.py": "bffebc4e2b73fa416c886bd715cc5812bb9b1199102ba089e9dbff12fead340f",
+    "prepare_request.py": "b1d2c297786a6622cbfea5e304909b96dcc65cadb1eff89ef64ea8885921f0ed"
+  },
+  "limitations": [
+    "The assistant has prior exposure to examples and earlier evaluation results; this is not blind or held-out evaluation.",
+    "A fresh isolated LLM conversation was not used.",
+    "New outputs were saved before reference annotations were loaded for scoring; prior exposure remains.",
+    "All main-corpus inputs specify age 12, so that run alone does not test variable-age behavior.",
+    "The five-age demo repeats one familiar skeleton example; it does not validate general developmental accuracy.",
+    "No verified sense-specific age evidence or human suitability ratings were supplied.",
+    "Python serialized explicit model-authored judgments and scored them; it did not perform LLM inference.",
+    "Instructor diagnostics were not rerun."
+  ]
+}
