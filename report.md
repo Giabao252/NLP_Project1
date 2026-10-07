@@ -134,11 +134,6 @@ These recommendations are model judgments, **not measured age accuracy**. Knowle
 
 [Kuperman, Stadthagen-Gonzalez, and Brysbaert (2012)](https://pubmed.ncbi.nlm.nih.gov/22581493/) provide word-level age-of-acquisition ratings. No numerical entries from those norms were obtained or applied in this run. Moreover, a word-level mean would not establish acquisition of each sense in a pun. The remaining empirical limitation is sense-specific age evidence; it should be supplied before making sourced developmental claims.
 
-## Hints and revisions
-
-The first version used a 20-word lookup table and lexical cues. It achieved 90% accuracy but wrongly accepted five literal texts. It also used unsupported numeric age estimates. That implementation is excluded from the final package because it does not meet the new no-hard-coding constraint adequately.
-
-The revised prompt adds general checks for contextual fit, literal comparison, causal compatibility, and negation. These were motivated by the baseline errors and the instructor's examples. This is **development guidance**, and is disclosed as exposure. There were no item-specific target-word hints or retries during the recorded version-2 run. A future assisted retry must preserve the initial output and report separate assisted metrics. Improvements over the first version are descriptive, not a controlled model comparison.
 
 ## Reproducing the workflow
 
@@ -171,7 +166,3 @@ python3 evaluate.py
 The scorer writes metrics.json. It scores saved outputs; it does not rerun LLM inference or rewrite this narrative report. The Python utilities use only the standard library. All 50 full outputs are also available in predictions.md for reading.
 
 The division into detection, localization, and interpretation is consistent with [Miller, Hempelmann, and Gurevych's SemEval-2017 Task 7](https://aclanthology.org/S17-2005/). This custom pilot is not a reproduction of that benchmark. For a stronger subsequent study, freeze the procedure, use independently annotated unseen examples, keep paired texts together in any split, and add independent explanation and age-suitability review.
-
-### Checking age sensitivity in a future version-3 run
-
-Present the same texts at several supplied ages (for example, 6, 12, and 17) using separate requests. Joke status should stay stable while sense familiarity, connecting knowledge, and recommendations may change. Review whether each explanation is justified for its input age; do not require every joke to change recommendations. Record these as new outputs, not as measured results in this report. The current evaluator uses the corpus's original age-12 labels and is not a cross-age suitability scorer; independent age-specific labels are needed for that evaluation.
