@@ -76,11 +76,8 @@ Jokes are the positive class. For binary metrics, only a `joke` output is positi
 | Pair success | Both the joke and its rewrite correct, divided by 20 pairs |
 | Coverage | Non-abstained decisions / 50; pair with answered-only accuracy |
 | Target localization | Intended target identified / 20, reported separately from acceptance |
-| Sense interpretation | Both meanings correct and grounded; requires semantic review, not string matching alone |
-| Explanation quality | Independent 0–2 ratings for meanings, grounding, and comic mechanism; report means and agreement |
-| Age suitability | Independent age-specific judgments: accuracy/macro F1, false suitability rate, and unknown-rate coverage |
 
-The last three semantic/developmental measures lack independent labels in this pilot. They are specified but **not reported as validated accuracy scores**. The majority-class baseline, always predicting non-joke, scores 60% accuracy on this corpus.
+The majority-class baseline, always predicting non-joke, scores 60% accuracy on this corpus.
 
 ## Run record and results
 
