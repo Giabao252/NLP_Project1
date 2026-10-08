@@ -1,0 +1,58 @@
+{
+  "status": "validated_and_scored",
+  "requested_model": "gpt-6.1-sol",
+  "procedure_version": 3,
+  "started_at_utc": "2026-10-08T13:22:25.780997+00:00",
+  "execution": "Fresh ephemeral Codex CLI process authenticated through ChatGPT; not an OpenAI API-key call.",
+  "reasoning_effort": "low",
+  "corpus_records": 50,
+  "age_demo_records": 5,
+  "prompt_sha256": "5b868123ba152f6780e5e96bd60f2ef67db610646b975c12884c2cbe46eb33e8",
+  "request_sha256": "88615ccb06578e715f2d32f7947d680541b9ab3d7748f64e14e28cd8ba76fe60",
+  "input_hashes": {
+    "run_inputs.jsonl": "9c50c4d33b17e7ab8c32c79950ab1fd97cf4149b942b34f916a54c827e2dda88",
+    "age_demo_inputs.jsonl": "3845a96a4e9a8f4867adaf872af89a45b96d1edca203ee424955e4d2673fbda5"
+  },
+  "command": [
+    "C:\\Users\\zecha\\AppData\\Local\\OpenAI\\Codex\\bin\\9691020b546a15b2\\codex.EXE",
+    "exec",
+    "--ignore-user-config",
+    "--ephemeral",
+    "--skip-git-repo-check",
+    "--sandbox",
+    "read-only",
+    "--model",
+    "gpt-6.1-sol",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "--cd",
+    "C:\\Users\\zecha\\.codex\\visualizations\\2026\\10\\04\\01a10488-7acc-7473-8dbe-11006e918a7d\\latest_model_run_2026-10-08\\inference_workspace",
+    "--color",
+    "never",
+    "--json",
+    "--output-last-message",
+    "C:\\Users\\zecha\\.codex\\visualizations\\2026\\10\\04\\01a10488-7acc-7473-8dbe-11006e918a7d\\latest_model_run_2026-10-08\\raw_predictions.txt",
+    "-"
+  ],
+  "gold_provided_to_model": false,
+  "prior_predictions_provided_to_model": false,
+  "limitations": [
+    "The authored corpus is familiar and not independently held out.",
+    "Age judgments are provisional model estimates, without human age-suitability labels.",
+    "Codex supplies its own system/developer context in addition to the saved inference request."
+  ],
+  "exit_code": 0,
+  "completed_at_utc": "2026-10-08T13:27:50.936861+00:00",
+  "selected_model": "gpt-6.1-sol",
+  "exact_model_snapshot": "Not exposed by Codex exec JSON events.",
+  "inference_tool_items": {},
+  "token_usage": {
+    "input_tokens": 19794,
+    "cached_input_tokens": 19456,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 12254,
+    "reasoning_output_tokens": 0
+  },
+  "predictions_sha256": "896d7f676e6f39888f790f9700a2c0bfc85ed8514b57c62315b64f3e8bf63785",
+  "age_predictions_sha256": "c8b4397627ef6b4c9d132bcae9f5c438b6a559ae688481c2cd061de4ee2038f0"
+}

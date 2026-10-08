@@ -1,0 +1,31 @@
+{
+  "records": 55,
+  "corpus_records": 50,
+  "age_demo_records": 5,
+  "checks_passed": [
+    "complete unique IDs",
+    "supplied ages",
+    "required fields and enum values",
+    "exact target and quotation spans",
+    "two supported senses per joke",
+    "null unsupported acquisition data",
+    "recommendation priority",
+    "same-text status and target consistency",
+    "evaluator checks"
+  ],
+  "status_counts": {
+    "joke": 18,
+    "non_joke": 31,
+    "uncertain": 1
+  },
+  "event_types": {
+    "thread.started": 1,
+    "turn.started": 1,
+    "item.completed": 1,
+    "turn.completed": 1
+  },
+  "item_types": {
+    "agent_message": 1
+  },
+  "tool_items": {}
+}

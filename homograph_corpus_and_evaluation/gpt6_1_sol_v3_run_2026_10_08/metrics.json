@@ -1,0 +1,61 @@
+{
+  "corpus": {
+    "n": 50,
+    "tp": 18,
+    "fp": 0,
+    "tn": 30,
+    "fn": 2,
+    "accuracy": 0.96,
+    "precision": 1.0,
+    "recall": 0.9,
+    "f1": 0.9473684210526315,
+    "specificity": 1.0,
+    "false_positive_rate": 0.0,
+    "balanced_accuracy": 0.95,
+    "macro_f1": 0.9575551782682512,
+    "strict_accuracy": 0.96,
+    "abstentions": 1,
+    "coverage": 0.98,
+    "answered_only_accuracy": 0.9795918367346939,
+    "paired_success_count": 18,
+    "pair_count": 20,
+    "paired_success_rate": 0.9,
+    "target_localization_including_abstentions": 0.95,
+    "subgroups": {
+      "joke": {
+        "correct": 18,
+        "total": 20
+      },
+      "additional_non_joke": {
+        "correct": 10,
+        "total": 10
+      },
+      "modified_non_joke": {
+        "correct": 20,
+        "total": 20
+      }
+    },
+    "errors": [
+      {
+        "id": "J20",
+        "run_id": "T021",
+        "status": "non_joke",
+        "reason": "The jewel provides only a jewelry association, not a supported second meaning that explains ringing the bell."
+      },
+      {
+        "id": "J11",
+        "run_id": "T040",
+        "status": "uncertain",
+        "reason": "Seasonal training and mattress coils are supported, but how training the springs explains the overstuffed mattress's happiness remains ambiguous."
+      }
+    ],
+    "age_recommendations": {
+      "provisionally_suitable": 10,
+      "explain_vocabulary_first": 9,
+      "not_applicable_non_joke": 1
+    },
+    "scope": "Non-blind in-chat LLM pilot. Unknown sense-specific AoA; no independent explanation or age accuracy."
+  },
+  "instructor_diagnostics": null,
+  "diagnostic_note": "Not rerun; historical diagnostics are not attributed to this model."
+}
