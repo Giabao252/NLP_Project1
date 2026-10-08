@@ -1,0 +1,60 @@
+{
+  "status": "validated_and_scored",
+  "requested_model": "gpt-6.1-sol",
+  "procedure_version": 3,
+  "reasoning_effort": "low",
+  "corpus_records": 50,
+  "age_demo_records": 5,
+  "execution": "Fresh ephemeral Codex CLI process using existing ChatGPT login; the complete prior request.md is supplied unchanged through stdin.",
+  "request_source": "C:\\Users\\zecha\\Documents\\NLP_Project1\\homograph_corpus_and_evaluation\\gpt6_1_sol_v3_run_2026_10_08\\request.md",
+  "request_sha256": "e7eb65fe94198d7b37d54e1a4f3add4ba77e4928b134a2cd66c77ff0ba7362bd",
+  "request_bytes_equal_to_source": true,
+  "prompt_sha256": "5b868123ba152f6780e5e96bd60f2ef67db610646b975c12884c2cbe46eb33e8",
+  "input_hashes": {
+    "run_inputs.jsonl": "9c50c4d33b17e7ab8c32c79950ab1fd97cf4149b942b34f916a54c827e2dda88",
+    "age_demo_inputs.jsonl": "3845a96a4e9a8f4867adaf872af89a45b96d1edca203ee424955e4d2673fbda5"
+  },
+  "gold_provided_to_model": false,
+  "prior_predictions_provided_to_model": false,
+  "started_at_utc": "2026-10-08T13:44:40.251037+00:00",
+  "command": [
+    "C:\\Users\\zecha\\AppData\\Local\\OpenAI\\Codex\\bin\\9691020b546a15b2\\codex.EXE",
+    "exec",
+    "--ignore-user-config",
+    "--ephemeral",
+    "--skip-git-repo-check",
+    "--sandbox",
+    "read-only",
+    "--model",
+    "gpt-6.1-sol",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "--cd",
+    "C:\\Users\\zecha\\.codex\\visualizations\\2026\\10\\04\\01a10488-7acc-7473-8dbe-11006e918a7d\\saved_request_rerun_2026-10-08\\inference_workspace",
+    "--color",
+    "never",
+    "--json",
+    "--output-last-message",
+    "C:\\Users\\zecha\\.codex\\visualizations\\2026\\10\\04\\01a10488-7acc-7473-8dbe-11006e918a7d\\saved_request_rerun_2026-10-08\\raw_predictions.txt",
+    "-"
+  ],
+  "limitations": [
+    "The corpus is an authored pilot, not an independently held-out benchmark.",
+    "Age judgments are estimates without human suitability ratings.",
+    "Codex supplies system/developer context in addition to request.md."
+  ],
+  "exit_code": 0,
+  "completed_at_utc": "2026-10-08T13:48:59.742329+00:00",
+  "selected_model": "gpt-6.1-sol",
+  "exact_model_snapshot": "Not exposed by Codex exec JSON events.",
+  "inference_tool_items": {},
+  "token_usage": {
+    "input_tokens": 19658,
+    "cached_input_tokens": 12544,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 13284,
+    "reasoning_output_tokens": 210
+  },
+  "predictions_sha256": "ddb4c2f034216907485eb531b4e1fee86af94e000c2563014a64d0b9073319fd",
+  "age_predictions_sha256": "d8f37998c8d3c40eb1b1e995fbfe937dc95224bcbc992578c42bf6c844fbe61d"
+}

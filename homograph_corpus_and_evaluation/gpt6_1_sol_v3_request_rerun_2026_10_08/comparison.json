@@ -1,0 +1,47 @@
+{
+  "same_request_bytes": true,
+  "request_sha256": "e7eb65fe94198d7b37d54e1a4f3add4ba77e4928b134a2cd66c77ff0ba7362bd",
+  "previous": {
+    "accuracy": 0.96,
+    "precision": 1.0,
+    "recall": 0.9,
+    "f1": 0.9473684210526315,
+    "abstentions": 1,
+    "errors": [
+      {
+        "id": "J20",
+        "run_id": "T021",
+        "status": "non_joke",
+        "reason": "The jewel provides only a jewelry association, not a supported second meaning that explains ringing the bell."
+      },
+      {
+        "id": "J11",
+        "run_id": "T040",
+        "status": "uncertain",
+        "reason": "Seasonal training and mattress coils are supported, but how training the springs explains the overstuffed mattress's happiness remains ambiguous."
+      }
+    ]
+  },
+  "rerun": {
+    "accuracy": 0.96,
+    "precision": 1.0,
+    "recall": 0.9,
+    "f1": 0.9473684210526315,
+    "abstentions": 1,
+    "errors": [
+      {
+        "id": "J20",
+        "run_id": "T021",
+        "status": "non_joke",
+        "reason": "The jewelry association does not establish a second ring reading that explains the jewel's school attendance."
+      },
+      {
+        "id": "J11",
+        "run_id": "T040",
+        "status": "uncertain",
+        "reason": "Both spring readings are plausible, but how training explains the overstuffed mattress's happiness remains ambiguous."
+      }
+    ]
+  },
+  "interpretation": "Repeat of the same prompt and data; differences reflect model-run variability and do not establish improved generalization."
+}
