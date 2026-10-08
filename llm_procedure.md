@@ -51,7 +51,7 @@ Choose the recommendation in this order:
 
 ## Concise output contract
 
-Return one JSON object per record, one line per object, preserving its ID and age. Return conclusions and brief evidence only: no step-by-step reasoning, candidate search, or rejected alternatives. Limit each response to 200 words, excluding JSON keys. Use these fields (the descriptions below are a schema, not an input or fixed prediction):
+Return one JSON object per record, one line per object, preserving its ID and age. Return conclusions and brief evidence only: no step-by-step reasoning, candidate search, or rejected alternatives. Limit each response to 200 words, excluding JSON keys. Each output line must be strictly valid JSON, parseable with no corrections: escape every literal `"` inside a string value as `\"` (including when quoting a word or idiom from the text), use straight quotes only (no smart/curly quotes), escape backslashes and newlines, and use no trailing commas. Before emitting each line, mentally re-parse it as JSON and fix anything that would fail. Use these fields (the descriptions below are a schema, not an input or fixed prediction):
 
 - `id`, `age`: copied from input; null if missing.
 - `status`: joke / non_joke / uncertain / invalid_input.
@@ -59,7 +59,7 @@ Return one JSON object per record, one line per object, preserving its ID and ag
 - `mechanism`: homograph / compositional_reanalysis / none.
 - `senses`: exactly two objects for joke or uncertain, each containing:
   - `meaning`: short definition.
-  - `evidence_quote`: nonempty exact input quotation.
+  - `evidence_quote`: a short, exact, contiguous substring copied verbatim from `text` (same words, same order, same punctuation) — never a paraphrase or reordering.
   - `connection`: brief link between quotation and sense.
   - `known_for_age`: likely_known / may_be_unfamiliar / unknown.
   - `age_basis`: short age-specific reason, labeled model estimate or backed by verified evidence.
