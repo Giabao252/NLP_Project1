@@ -10,6 +10,8 @@ Use this prompt with an object or JSONL records containing `id`, `text`, and `ag
 
 **Comic reinterpretation:** the text connects an expected meaning with another meaning that explains an unexpected answer, action, or misunderstanding. The meaning switch must explain the surprise; merely mentioning two meanings or describing an unusual situation is insufficient.
 
+**Homophone** refers to a pair or group of words that sound the same when spoken but have different meanings and spellings (such as night and knight, or sea and see).
+
 ## Classification
 
 Input requires a nonempty string `text`, a unique nonempty string `id`, and integer `age` from 0 to 120 (booleans are invalid). Invalid input produces `invalid_input`, not `non_joke`. Optional `age_evidence` may supply sourced, sense-specific evidence.
