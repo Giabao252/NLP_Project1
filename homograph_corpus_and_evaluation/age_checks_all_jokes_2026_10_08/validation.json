@@ -1,0 +1,16 @@
+{
+  "checks_passed": [
+    "20 texts x five ages = 100 unique outputs",
+    "age and input IDs preserved",
+    "required fields and enums",
+    "exact candidate and evidence spans",
+    "supported meaning pairs for accepted jokes",
+    "recommendation priorities",
+    "no unsupported numerical acquisition ages or sources",
+    "joke status consistent across ages for each text",
+    "no inference tool events"
+  ],
+  "assessment_count": 100,
+  "inconsistent_status_items": [],
+  "tool_events": []
+}

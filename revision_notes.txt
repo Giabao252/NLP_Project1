@@ -1,0 +1,7 @@
+Requested revisions
+
+1. Remove the last three semantic measures.
+2. Remove the AI procedure sections and rewrite the wording in a more natural, human style.
+3. Remove version labels and references.
+4. Update the data to reflect the latest results.
+5. Include a rating for each disagreement.

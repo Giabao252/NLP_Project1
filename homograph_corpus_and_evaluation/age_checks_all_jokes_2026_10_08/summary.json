@@ -1,0 +1,69 @@
+{
+  "5": {
+    "recommendations": {
+      "explain_vocabulary_first": 19,
+      "not_applicable_non_joke": 1
+    },
+    "content": {
+      "suitable": 20
+    },
+    "joke_status": {
+      "joke": 19,
+      "non_joke": 1
+    }
+  },
+  "8": {
+    "recommendations": {
+      "provisionally_suitable": 5,
+      "explain_vocabulary_first": 14,
+      "not_applicable_non_joke": 1
+    },
+    "content": {
+      "suitable": 20
+    },
+    "joke_status": {
+      "joke": 19,
+      "non_joke": 1
+    }
+  },
+  "12": {
+    "recommendations": {
+      "provisionally_suitable": 16,
+      "explain_vocabulary_first": 3,
+      "not_applicable_non_joke": 1
+    },
+    "content": {
+      "suitable": 20
+    },
+    "joke_status": {
+      "joke": 19,
+      "non_joke": 1
+    }
+  },
+  "16": {
+    "recommendations": {
+      "provisionally_suitable": 19,
+      "not_applicable_non_joke": 1
+    },
+    "content": {
+      "suitable": 20
+    },
+    "joke_status": {
+      "joke": 19,
+      "non_joke": 1
+    }
+  },
+  "30": {
+    "recommendations": {
+      "provisionally_suitable": 19,
+      "not_applicable_non_joke": 1
+    },
+    "content": {
+      "suitable": 20
+    },
+    "joke_status": {
+      "joke": 19,
+      "non_joke": 1
+    }
+  }
+}

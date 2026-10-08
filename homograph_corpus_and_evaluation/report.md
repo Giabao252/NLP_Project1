@@ -1,170 +1,184 @@
 # Detecting age-appropriate homographic wordplay
 
-> Revision note: This report's saved run and scores used version 2, now archived in llm_procedure_v2.md. The active llm_procedure.md is version 3, with precise definitions, shorter decision rules, and separate age-comprehension assessment. See execution.md. The saved scores do not evaluate the revised prompt.
-
 ## Project summary
 
-This project uses an **explicit LLM prompting procedure**, an approach permitted by the assignment. It replaces the earlier corpus-specific word-and-cue lookup implementation. The prompt defines homographs, contextual support, causal coherence, rejection conditions, age judgments, and a structured output format. It does not contain a fixed list of the corpus's target words, answer mappings, or numerical age thresholds.
+The project examines whether a text uses the same written word in two meanings to create a coherent joke. It also considers whether readers of a specified age are likely to understand those meanings and whether the content is suitable for them.
 
-The main corpus contains **50 texts: 20 intended jokes, 20 matched non-joke rewrites, and 10 additional non-jokes**. Seven instructor examples are a separate diagnostic set, not additional items in the main metric denominator. The audience age for this pilot is **12**, a working assumption because no audience age was specified. New requests can provide any valid age.
+The main collection contains **50 texts: 20 intended jokes, 20 matched non-joke rewrites, and 10 additional non-jokes**. The 50-text detection test uses age **12**. A separate age assessment now checks **all 20 intended jokes** at ages **5, 8, 12, 16, and 30**, giving **100 assessments**.
 
-The in-chat pilot accepted **19 of the 20 intended jokes**, rejected **all 30 non-jokes**, and marked one intended joke uncertain. Counting that abstention as a missed positive gives **98.0% accuracy and 97.4% joke F1**. This is a **non-blind exploratory result**, not a validated performance claim.
+The saved 50-text detection test accepted **18 intended jokes**, rejected **all 30 reference non-jokes**, rejected **one intended joke**, and left **one intended joke uncertain**. Accuracy was **96.0%** and joke F1 was **94.74%**. These are results on a small authored collection, not independent evidence of general performance.
 
-## What counts as a joke in this project?
+The 50-text detection results and their age-12 judgments come from the saved [readable corpus predictions](gpt6_1_sol_v3_request_rerun_2026_10_08/predictions.md) and [readable age comparison](gpt6_1_sol_v3_request_rerun_2026_10_08/age_predictions.md). The numerical results were checked against the saved scores for that same test.
 
-A positive text relies on a written form that supports two meanings, each connected to a different relevant part of the text, with a coherent comic switch between them. Identical spelling is required; pronunciation may differ. Thus bow and bass can qualify, while a pun requiring two differently spelled sound-alike words does not.
+## What counts as wordplay?
 
-Idioms and noun/verb shifts can qualify. A meaningful same-spelling substring can qualify under the instructor's broader allowance, but a novel decomposition such as auto + biography is explicitly labeled **compositional reanalysis**, rather than falsely described as a conventional second dictionary meaning. The main corpus uses ordinary words; that boundary case appears only in the instructor diagnostics.
+A candidate is the exact word, phrase, or meaningful substring whose two readings could explain the text. A comic reinterpretation occurs when an alternative reading makes an unexpected answer, action, or misunderstanding intelligible while contrasting with the expected reading. Both meanings need support from the text.
 
-The objective is to detect this form of wordplay, not every kind of humor. A text can be amusing without meeting the homograph criterion. Conversely, mentioning two dictionary meanings is not enough to make a text a joke.
+For example, a request for a baseball bat followed by the delivery of a flying animal shifts bat from sporting equipment to a mammal. A museum label describing both kinds of bat is a factual comparison and does not create the same comic switch.
 
-## Procedure and outputs
+Identical spelling is required; pronunciation may differ. Idioms and shifts between noun and verb uses can qualify. A newly invented subdivision of a word must be identified as a playful reanalysis rather than an established dictionary meaning.
 
-The reusable specification is **llm_procedure.md**. For every text and age, it instructs the LLM to:
+## The collection
 
-1. Find a candidate word, idiom, or meaningful substring and formulate the relevant senses.
-2. Quote exact evidence for each sense and explain its contextual connection.
-3. Check the readings against speaker roles, grammar, negation, and cause-and-effect. Do not silently repair the text or invent a remote sense.
-4. Decide whether there is a coherent comic reinterpretation, a literal use, or an unresolved borderline case.
-5. Explain the specific expectation and how the alternative meaning changes it.
-6. Assess each meaning's likely familiarity for the supplied age, separately from content suitability. Identify uncertainty and the basis of the judgment.
-7. Return structured JSON with status, target, meanings, evidence, explanation, age judgments, and recommendation.
+Texts were adapted from the supplied joke list where necessary. The paired non-jokes retain the target spelling while removing the comic reinterpretation, so the presence of an ambiguous word alone cannot determine the answer. The additional texts include ordinary questions and dialogue; three explicitly compare meanings without making a joke.
 
-The request preparation script takes a text and age and builds the LLM request. **It does not itself call a model.** The inference step in this run was performed by the assistant in the current conversation. Predictions were serialized, then scored by a separate Python evaluator. No API execution is claimed. A fresh run requires submitting the saved prompt and inputs to an LLM again.
+The reference joke labels are unchanged. Disagreements remain visible rather than being removed by changing a label after the test. The earlier instructor examples were not rerun in this test and are not included in the current scores.
 
-## Correct rejection and failure conditions
+## Results of the 50-text detection test
 
-Here, “fail when not a joke” means reject the joke hypothesis, not raise a software error. A correct rejection is a true negative. Reject when:
+Jokes are the positive class. An uncertain response is not counted as an accepted joke; it counts as a missed positive when the reference label is a joke.
 
-- Only one meaning is supported, even if the word has many dictionary senses.
-- Two meanings are presented as a factual definition or comparison, without a comic switch.
-- The supposed second meaning depends only on differently spelled sound-alike words.
-- A candidate second reading is merely associated with a nearby word rather than used in the text.
-- The alternate sense fails to explain the stated answer or action, including because negation reverses the relationship.
-- The proposed explanation requires invented facts, unsupported political symbolism, or a nonexistent lexical meaning.
+| Reference class | Accepted as a joke | Rejected | Uncertain |
+| --- | ---: | ---: | ---: |
+| Intended joke (20) | 18 | 1 | 1 |
+| Non-joke (30) | 0 | 30 | 0 |
 
-When evidence is borderline, return **uncertain**. When no compatible pair is found, say that clearly without claiming that every word in the text is unambiguous. Empty text and invalid ages are input errors. Unknown vocabulary or unsuitable content does **not** turn an actual joke into a non-joke; it changes the age recommendation.
-
-## Corpus construction
-
-The source is the user's supplied joke list. Selected items were adapted to repair unclear or invalid wordplay. Each pair retains its source number and records two intended meanings and a reference explanation. Adaptations are not represented as verbatim source quotations. Different-spelling sound puns, incomplete fragments, and invented senses were excluded.
-
-Each non-joke rewrite keeps the target spelling, rather than simply deleting the potentially ambiguous word. It removes the humorous reinterpretation while retaining the topic and approximate length. This prevents a trivial target-word-presence classifier from succeeding. The ten added texts have comparable lengths and include ordinary dialogue and questions. Three deliberately describe both meanings literally: bat, current, and bank.
-
-The main corpus's texts and joke labels were preserved from the earlier development run. Numerical age guesses were removed from its annotations. J07 remains an intended joke in the gold data despite the new model's uncertainty, so the disagreement is visible rather than hidden by relabeling the item. Both joke status and interpretation would benefit from independent human annotation.
-
-## Metrics
-
-Jokes are the positive class. For binary metrics, only a `joke` output is positive; an uncertain output is not accepted as a joke. Also report abstention coverage so that this mapping is visible. Strict accuracy counts any abstention as an error.
-
-| Metric | Definition and purpose |
-|---|---|
-| Accuracy | (TP + TN) / N; overall binary correctness |
-| Precision | TP / (TP + FP); reliability of joke predictions |
-| Recall | TP / (TP + FN); proportion of gold jokes accepted |
-| F1 | 2TP / (2TP + FP + FN); balances precision and recall |
-| Specificity | TN / (TN + FP); correct rejection of non-jokes |
-| False-positive rate | FP / (TN + FP); inappropriate joke acceptance |
-| Balanced accuracy | Mean of recall and specificity |
-| Macro F1 | Mean F1 across joke and non-joke classes |
-| Pair success | Both the joke and its rewrite correct, divided by 20 pairs |
-| Coverage | Non-abstained decisions / 50; pair with answered-only accuracy |
-| Target localization | Intended target identified / 20, reported separately from acceptance |
-| Sense interpretation | Both meanings correct and grounded; requires semantic review, not string matching alone |
-| Explanation quality | Independent 0–2 ratings for meanings, grounding, and comic mechanism; report means and agreement |
-| Age suitability | Independent age-specific judgments: accuracy/macro F1, false suitability rate, and unknown-rate coverage |
-
-The last three semantic/developmental measures lack independent labels in this pilot. They are specified but **not reported as validated accuracy scores**. The majority-class baseline, always predicting non-joke, scores 60% accuracy on this corpus.
-
-## Run record and results
-
-Execution: current-conversation LLM application of version 2 of the procedure. The serving context identifies a GPT-6-family assistant; an exact snapshot and sampling settings were not exposed. Fifty text-only records were shuffled with a recorded seed and assigned opaque IDs. The saved prompt and input hashes are in run_manifest.json. The output includes one decision per input and exact evidence quotations; the evaluator checks completeness, unique IDs, age consistency, and quoted spans before scoring.
-
-**Exposure limitation:** the same assistant created the corpus and previously read its annotations. Opaque IDs and text-only input files do not undo this exposure. This was not an isolated call, blinded evaluation, or held-out test. The outputs are the assistant's recorded judgments from this conversation. They must not be described as independently measured generalization performance.
-
-| Actual class | Predicted joke | Not accepted as joke |
-|---|---:|---:|
-| Joke (20) | 19 | 1 uncertain |
-| Non-joke (30) | 0 | 30 |
-
-| Metric | Result |
-|---|---:|
-| Accuracy / strict accuracy | 98.0% |
+| Measure | Result |
+| --- | ---: | ---
+| Accuracy / strict accuracy | 96.0% |
 | Joke precision | 100.0% |
-| Joke recall | 95.0% |
-| Joke F1 | 97.4% |
+| Joke recall | 90.0% |
+| Joke F1 | 94.74% |
 | Specificity | 100.0% |
 | False-positive rate | 0.0% |
-| Balanced accuracy | 97.5% |
-| Macro F1 | 97.9% |
-| Pair success | 19/20 (95.0%) |
-| Coverage | 98.0% |
-| Answered-only accuracy | 100.0% (49 decisions; excludes one abstention) |
+| Balanced accuracy | 95.0% |
+| Macro F1 | 95.76% |
+| Pair success | 18/20 (90.0%) |
+| Coverage | 98.0% (49 of 50 decisions) |
+| Answered-only accuracy | 97.96% (48 of 49 decisions) |
+| Target localization | 100.0% (20 of 20 intended joke targets) |
 
-All 20 target words were identified, including desert in the uncertain item. This does not mean all 20 jokes were accepted or that the meanings were independently validated. The 20 modified non-jokes and 10 additional non-jokes were all rejected.
+Identifying the target word does not establish that both readings create a coherent joke. The majority-class baseline, which labels everything a non-joke, would achieve 60.0% accuracy.
 
-### Disagreement
+## Age-of-acquisition
 
-J07 says that a founder threatened to “desert his investors,” who then packed sunscreen. The intended readings are abandon and an arid region. The model recognized both, but marked the joke uncertain because the nominal geographical reading does not directly explain the verb phrase; it needs an unstated relocation or trip. This is a debatable annotation boundary. The reference label was not changed after seeing the result. The abstention counts against recall.
+Age of acquisition concerns when a meaning becomes familiar. Here, each meaning is considered separately: recognizing a word does not establish knowledge of its idiom, technical sense, or cultural reference. Understanding both meanings also does not guarantee that a reader understands the switch between them.
 
-### Instructor diagnostics
+**No verified sense-specific acquisition ages or sources were supplied for the earlier test or any of the 100 new age assessments.** The saved outputs therefore leave numerical acquisition ages and sources empty. This report does not assign an acquisition age, infer a minimum suitable age from a single judgment, or present familiarity estimates as developmental measurements.
 
-| Case | Output | Explanation |
-|---|---|---|
-| Shingles / aluminum siding | Joke | Disease context shifts to building material |
-| Autobiography / talking car | Joke, compositional reanalysis | Auto is playfully interpreted as car |
-| Elephant trunk / no pockets | Joke | Body part shifts to storage container |
-| Elephant tail / no pockets | Non-joke | No supported storage meaning of tail |
-| Elephant mouth / no pockets | Non-joke | Putting things into a mouth still uses the anatomical sense |
-| Skeletons **do not** fight / no guts | Joke | Lack of courage explains avoiding fighting |
-| Skeletons **do** fight / no guts | Non-joke | Lack of courage does not explain fighting as stated |
+The predictions use three practical descriptions: **likely familiar**, **may need explanation**, and **unknown**. These are provisional estimates about the specified audience, not proof of an individual reader's knowledge. Experience with idioms, sports, occupations, foods, and cultural references can change familiarity at the same age.
 
-All seven agree with the instructor's expected interpretations, including the fuzzy autobiography allowance. These examples were **known during procedure design** and therefore are compliance checks, not unseen test evidence. Their results are not pooled with the 50-text corpus score.
+### Age-12 judgments in the 50-text detection test
 
-## Age-of-acquisition and suitability
+Among the **20 reference-labeled jokes**, **11** were provisionally suitable, **eight** needed explanation or review of the wordplay, and **one** received no joke recommendation because it was rejected as a joke. Among the **18 accepted jokes alone**, **11** were provisionally suitable and **seven** needed explanation. The eighth explanation recommendation belongs to the uncertain mattress item.
 
-The assignment asks whether the meanings are known at the target age. A model cannot establish an individual child's knowledge from age alone. This run therefore returns a **provisional per-sense judgment**, and uses null for numerical acquisition ages and sources where no supporting evidence was retrieved. It does not claim that a particular word was acquired at a fabricated age.
+| Item | Candidate | Meaning or connection needing support |
+| --- | --- | --- |
+| [T001](gpt6_1_sol_v3_request_rerun_2026_10_08/predictions.md#t001) | bass | At age 12, recognizing the fish name and the slang meaning of off the hook may require explanation. |
+| [T004](gpt6_1_sol_v3_request_rerun_2026_10_08/predictions.md#t004) | hack | At age 12, the switch may need an explanation of hack meaning cope. |
+| [T006](gpt6_1_sol_v3_request_rerun_2026_10_08/predictions.md#t006) | desert | At age 12, understanding desert as abandon and recognizing its different pronunciation may need explanation. |
+| [T019](gpt6_1_sol_v3_request_rerun_2026_10_08/predictions.md#t019) | date | At age 12, the calendar-to-fruit switch may need identification of the fruit date. |
+| [T025](gpt6_1_sol_v3_request_rerun_2026_10_08/predictions.md#t025) | stall | At age 12, interpreting stall as delay within the familiar phrase shower stall may need explanation. |
+| [T028](gpt6_1_sol_v3_request_rerun_2026_10_08/predictions.md#t028) | seal | At age 12, the animal substitution is clear once the official-document sense of seal is explained. |
+| [T040](gpt6_1_sol_v3_request_rerun_2026_10_08/predictions.md#t040) | spring | At age 12, the sports phrase may need explanation and the comic connection also needs review. |
+| [T049](gpt6_1_sol_v3_request_rerun_2026_10_08/predictions.md#t049) | balance | At age 12, the physical action is clear but the accounting idiom may need explanation. |
 
-For the 20 gold jokes at age 12, outputs recommend: **13 provisionally suitable**, **6 needing vocabulary or wordplay explanation**, and **1 needing content review**. Examples requiring support include the accounting sense of balance, the informal hack idiom, date fruit, and contextual expressions such as off the hook or spring training. The axe-at-an-exam joke receives content review. The uncertain desert item is included in the six requiring explanation, not certified suitable.
+The accounting use of balance, the idiom hack meaning cope, date as a fruit, the official mark called a seal, and expressions such as off the hook and spring training illustrate the knowledge demands. The shower-stall item also received an explanation recommendation because its delay reading may be less familiar.
 
-These recommendations are model judgments, **not measured age accuracy**. Knowledge of both senses, relevant idioms, and background situations may differ by experience. A joke's clean subject matter does not guarantee comprehension. The earlier hand-assigned numeric thresholds were removed.
+## Content suitability
 
-[Kuperman, Stadthagen-Gonzalez, and Brysbaert (2012)](https://pubmed.ncbi.nlm.nih.gov/22581493/) provide word-level age-of-acquisition ratings. No numerical entries from those norms were obtained or applied in this run. Moreover, a word-level mean would not establish acquisition of each sense in a pun. The remaining empirical limitation is sense-specific age evidence; it should be supplied before making sourced developmental claims.
+Content suitability is assessed separately from vocabulary and understanding the wordplay. A clean topic can still contain an unfamiliar idiom, while difficult vocabulary does not make the subject inappropriate.
 
-## Hints and revisions
+In the 50-text detection test, **all 20 intended jokes were marked content-suitable at age 12**. None received a content-review or unsuitable-content recommendation. This includes the axe-at-an-exam text: its saved assessment notes that the axe is mentioned without threats or injury. That is the assessment recorded for this test, not a universal endorsement for every classroom or reader.
 
-The first version used a 20-word lookup table and lexical cues. It achieved 90% accuracy but wrongly accepted five literal texts. It also used unsupported numeric age estimates. That implementation is excluded from the final package because it does not meet the new no-hard-coding constraint adequately.
+The rejected jewel item is still marked content-suitable. Its rejection concerns the unsupported jewelry-to-bell interpretation, not its appropriateness for the audience. Similarly, the uncertain mattress item needs review of the comic connection and sports reference rather than a content restriction.
 
-The revised prompt adds general checks for contextual fit, literal comparison, causal compatibility, and negation. These were motivated by the baseline errors and the instructor's examples. This is **development guidance**, and is disclosed as exposure. There were no item-specific target-word hints or retries during the recorded version-2 run. A future assisted retry must preserve the initial output and report separate assisted metrics. Improvements over the first version are descriptive, not a controlled model comparison.
+## Age checks for every intended joke
 
-## Reproducing the workflow
+All 20 reference-labeled jokes were checked at ages **5, 8, 12, 16, and 30**. Each joke used a fresh model context containing only the full prompt and its five text-and-age records. The two disputed jokes were included so their vocabulary and content would not be overlooked. No reference labels, intended meanings, gold explanations, or previous predictions were supplied to the model.
 
-Use the saved llm_procedure.md and run_inputs.jsonl in a **fresh LLM session**. Do not include corpus.jsonl, evaluation_key.json, gold explanations, or previous predictions in that session. Record the model/version, settings if available, exact prompt, and raw responses. For stronger isolation, send one record per fresh context. A future independent run may produce different outputs.
+The table reports the saved overall recommendation. **Provisionally suitable** means the meanings and switch were judged likely to be understood and the content suitable; **Explain first** means vocabulary or the connection needs support; **Review content** concerns the subject matter. **Joke not confirmed** means the text was rejected as a joke, not that its content is automatically inappropriate. Exact familiarity judgments, content ratings, and reasons for all 100 cases are in the [complete readable age checks](age_checks_all_jokes_2026_10_08/predictions.md).
 
-From the extracted folder, prepare an arbitrary single-input request:
+| Joke | Intended word | Age 5 | Age 8 | Age 12 | Age 16 | Age 30 |
+| --- | --- | --- | --- | --- | --- | --- |
+| [J01](age_checks_all_jokes_2026_10_08/predictions.md#j01) | bat | Explain first | Provisionally suitable | Provisionally suitable | Provisionally suitable | Provisionally suitable |
+| [J02](age_checks_all_jokes_2026_10_08/predictions.md#j02) | seal | Explain first | Explain first | Provisionally suitable | Provisionally suitable | Provisionally suitable |
+| [J03](age_checks_all_jokes_2026_10_08/predictions.md#j03) | bark | Explain first | Provisionally suitable | Provisionally suitable | Provisionally suitable | Provisionally suitable |
+| [J04](age_checks_all_jokes_2026_10_08/predictions.md#j04) | bank | Explain first | Provisionally suitable | Provisionally suitable | Provisionally suitable | Provisionally suitable |
+| [J05](age_checks_all_jokes_2026_10_08/predictions.md#j05) | bow | Explain first | Provisionally suitable | Provisionally suitable | Provisionally suitable | Provisionally suitable |
+| [J06](age_checks_all_jokes_2026_10_08/predictions.md#j06) | date | Explain first | Explain first | Provisionally suitable | Provisionally suitable | Provisionally suitable |
+| [J07](age_checks_all_jokes_2026_10_08/predictions.md#j07) | desert | Explain first | Explain first | Provisionally suitable | Provisionally suitable | Provisionally suitable |
+| [J08](age_checks_all_jokes_2026_10_08/predictions.md#j08) | model | Explain first | Explain first | Provisionally suitable | Provisionally suitable | Provisionally suitable |
+| [J09](age_checks_all_jokes_2026_10_08/predictions.md#j09) | balance | Explain first | Explain first | Explain first | Provisionally suitable | Provisionally suitable |
+| [J10](age_checks_all_jokes_2026_10_08/predictions.md#j10) | court | Explain first | Explain first | Provisionally suitable | Provisionally suitable | Provisionally suitable |
+| [J11](age_checks_all_jokes_2026_10_08/predictions.md#j11) | spring | Explain first | Explain first | Explain first | Provisionally suitable | Provisionally suitable |
+| [J12](age_checks_all_jokes_2026_10_08/predictions.md#j12) | mouse | Explain first | Provisionally suitable | Provisionally suitable | Provisionally suitable | Provisionally suitable |
+| [J13](age_checks_all_jokes_2026_10_08/predictions.md#j13) | handle | Explain first | Explain first | Provisionally suitable | Provisionally suitable | Provisionally suitable |
+| [J14](age_checks_all_jokes_2026_10_08/predictions.md#j14) | hack | Explain first | Explain first | Provisionally suitable | Provisionally suitable | Provisionally suitable |
+| [J15](age_checks_all_jokes_2026_10_08/predictions.md#j15) | stall | Explain first | Explain first | Provisionally suitable | Provisionally suitable | Provisionally suitable |
+| [J16](age_checks_all_jokes_2026_10_08/predictions.md#j16) | suit | Explain first | Explain first | Provisionally suitable | Provisionally suitable | Provisionally suitable |
+| [J17](age_checks_all_jokes_2026_10_08/predictions.md#j17) | bass | Explain first | Explain first | Explain first | Provisionally suitable | Provisionally suitable |
+| [J18](age_checks_all_jokes_2026_10_08/predictions.md#j18) | file | Explain first | Explain first | Provisionally suitable | Provisionally suitable | Provisionally suitable |
+| [J19](age_checks_all_jokes_2026_10_08/predictions.md#j19) | current | Explain first | Explain first | Provisionally suitable | Provisionally suitable | Provisionally suitable |
+| [J20](age_checks_all_jokes_2026_10_08/predictions.md#j20) | ring | Joke not confirmed | Joke not confirmed | Joke not confirmed | Joke not confirmed | Joke not confirmed |
 
-```sh
-python3 prepare_request.py --text "Why don't skeletons fight? Because they have no guts." --age 12 --out request.md
-```
+### Recommendations by age
 
-Or prepare the saved batch:
+| Age | Provisionally suitable | Explain first | Review content | Unsuitable | Joke not confirmed |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 5 | 0 | 19 | 0 | 0 | 1 |
+| 8 | 5 | 14 | 0 | 0 | 1 |
+| 12 | 16 | 3 | 0 | 0 | 1 |
+| 16 | 19 | 0 | 0 | 0 | 1 |
+| 30 | 19 | 0 | 0 | 0 | 1 |
 
-```sh
-python3 prepare_request.py --inputs run_inputs.jsonl --out request.md
-```
+### Content judgments, separately from comprehension
 
-Submit request.md to an LLM, save one JSON object per line with the original opaque IDs, and evaluate the 50-record response:
+| Age | Suitable content | Content needs review | Unsuitable content |
+| --- | ---: | ---: | ---: |
+| 5 | 20 | 0 | 0 |
+| 8 | 20 | 0 | 0 |
+| 12 | 20 | 0 | 0 |
+| 16 | 20 | 0 | 0 |
+| 30 | 20 | 0 | 0 |
 
-```sh
-python3 evaluate.py --predictions fresh_predictions.jsonl
-```
+### Reasons behind age-dependent recommendations
 
-To recompute this recorded pilot's metrics without calling a model:
+- **J01 — bat:** Age 5: Provisional model estimate: at age 5, connecting the baseball equipment request to the animal meaning may need an explanation of both meanings of bat. Age 8: Provisional model estimate: at age 8, the explicit animal response likely makes the simple switch between the two common meanings of bat understandable.
+- **J02 — seal:** Age 5: Provisional model estimate: at age 5, connecting an official document seal to the assistant's animal misunderstanding likely needs explanation. Age 12: Provisional model estimate: at age 12, the document and aquarium cues likely make the switch between an authenticating mark and an animal understandable.
+- **J03 — bark:** Age 5: At age 5, connecting the tree covering to a dog's sound and understanding microphone amplification may need explanation. Age 8: At age 8, the simple switch between tree covering and dog sound, linked by a microphone making sound louder, is likely understood.
+- **J04 — bank:** Age 5: At age 5, connecting a money deposit with water arriving at a riverbank likely needs explanation. Age 8: At age 8, substituting water for money in a deposit likely makes the switch between the two familiar bank meanings understandable.
+- **J05 — bow:** Age 5: Provisional model estimate: at age 5, connecting the applause convention to the same written word for a weapon likely needs explanation. Age 8: Provisional model estimate: at age 8, the explicit contrast between picking up a weapon and bending likely makes the switch understandable.
+- **J06 — date:** Age 5: Provisional model estimate: at age 5, connecting a scheduling request to an implicitly identified date fruit likely needs explanation. Age 12: Provisional model estimate: at age 12, the fruit seller and edible response likely make the switch from a calendar date to a date fruit understandable.
+- **J07 — desert:** Age 5: At age 5, connecting an abandonment threat to a landscape through the same spelling likely needs explanation. Age 12: At age 12, the shift from abandoning people to imagining a desert meeting location is likely understandable from the sand and sunscreen cues.
+- **J08 — model:** Age 5: At age 5, connecting the two meanings of model and recognizing why the statue makes the claim unimpressive likely needs explanation. Age 12: At age 12, switching from a human posing to a clay representation and recognizing that statues need no lunch is likely understood.
+- **J09 — balance:** Age 5: At age 5, understanding the switch likely requires explaining the accounting expression and connecting it to physical balance. Age 16: At age 16, the contrast between accounting work and physical balancing is likely understood from the accountant and tightrope cues.
+- **J10 — court:** Age 5: Provisional model estimate: at age 5, connecting the lawyer and basketball clues to two meanings of court likely needs explanation. Age 12: Provisional model estimate: at age 12, using the lawyer and basketball clues to distinguish the two common meanings of court is likely understood.
+- **J11 — spring:** Age 5: At age 5, connecting seasonal sports training to personified mattress coils likely needs explanation. Age 16: At age 16, switching from seasonal sports preparation to personified mattress coils is likely understood.
+- **J12 — mouse:** Age 5: At age 5, connecting the computer-device meaning with a cat playing with a rodent will likely need explanation. Age 8: Provisional model estimate: at age 8, the simple switch between a computer device and a rodent is likely understood.
+- **J13 — handle:** Age 5: Provisional model estimate: at age 5, connecting figurative problem solving with an implied pot handle likely needs explanation. Age 12: Provisional model estimate: at age 12, inferring a pot handle as the solution and linking it to managing a problem is likely understood.
+- **J14 — hack:** Age 5: At age 5, connecting an idiom about coping with coursework to chopping with an axe likely needs explanation. Age 12: At age 12, the switch from coping with coursework to chopping with an axe is likely understood without specialist knowledge.
+- **J15 — stall:** Age 5: At age 5, connecting the shower enclosure name to a delay in building the shower likely needs explanation. Age 12: At age 12, connecting the enclosure phrase to the explicitly stated construction delay is likely understood.
+- **J16 — suit:** Age 5: At age 5, connecting the expression 'suit me fine' with being dressed in a tuxedo likely needs explanation. Age 12: At age 12, connecting a satisfactory offer with the suit supplied by a tuxedo rental is likely understood.
+- **J17 — bass:** Age 5: Provisional model estimate: at age 5, connecting the two meanings of bass and the slang versus literal readings of 'off the hook' likely needs explanation. Age 16: Provisional model estimate: at age 16, the slang meaning of 'off the hook' and the contextual switch from musical bass to fish are likely understood.
+- **J18 — file:** Age 5: At age 5, connecting the office instruction to the tool action likely requires explaining both uses of file. Age 12: At age 12, the direct switch from document filing to smoothing with a nail file is likely understood from the contrasting actions.
+- **J19 — current:** Age 5: Provisional model estimate: at age 5, connecting electrical flow with river flow through the same word likely needs explanation. Age 12: Provisional model estimate: at age 12, the explicit circuit-to-river contrast likely makes the switch between the two meanings understandable.
 
-```sh
-python3 evaluate.py
-```
+These are age-specific estimates, not verified acquisition ages or exact thresholds. The checks do not show that every child at one age will understand a joke, and the recommendations need not improve at every sampled age. The original 50-text detection scores remain unchanged because this separate study contains intended jokes only, with different ages and new contexts.
 
-The scorer writes metrics.json. It scores saved outputs; it does not rerun LLM inference or rewrite this narrative report. The Python utilities use only the standard library. All 50 full outputs are also available in predictions.md for reading.
+### Differences from the detection test
 
-The division into detection, localization, and interpretation is consistent with [Miller, Hempelmann, and Gurevych's SemEval-2017 Task 7](https://aclanthology.org/S17-2005/). This custom pilot is not a reproduction of that benchmark. For a stronger subsequent study, freeze the procedure, use independently annotated unseen examples, keep paired texts together in any split, and add independent explanation and age-suitability review.
+**J11 — spring:** The earlier 50-text test marked this uncertain; the new per-joke context marked it joke at all five ages. The changed decision is preserved rather than adjusted to match the earlier run.
+
+This is variation between model runs and contexts, not an effect of changing age: the decision stayed consistent across ages within each new context. The disagreement ratings below describe the earlier detection test.
+
+## Disagreements in the 50-text detection test
+
+Two items differ from their reference joke labels. For this report, the review rating describes the interpretation problem: **0 = agreement**, **1 = supported meanings with an ambiguous comic connection**, and **2 = an intended reading is not adequately grounded in the text**. These are editorial review ratings added for discussion, not independent human annotation or a measured explanation-quality score.
+
+| Item | Reference label | Saved decision | Review rating | Reason |
+| --- | --- | --- | --- | --- |
+| [J20 / T021](gpt6_1_sol_v3_request_rerun_2026_10_08/predictions.md#t021), jewel and ring | Joke | Not a joke | **2 — substantive grounding problem** | A jewel can be associated with a jewelry ring, but that association does not establish a second ring reading that explains going to school to ring a bell. |
+| [J11 / T040](gpt6_1_sol_v3_request_rerun_2026_10_08/predictions.md#t040), mattress and spring training | Joke | Uncertain | **1 — ambiguous comic connection** | Both the mattress-coil and seasonal-training readings are plausible, but the connection between training and the overstuffed mattress's happiness remains unclear. |
+
+Both count against joke recall. The reference labels have not been changed. The founder/desert item was accepted in this test; its abandon meaning still received an age-specific explanation recommendation.
+
+## Evidence and limits
+
+The 50-text detection assessment used **GPT-6.1 Sol** in a fresh Codex process, supplied with the full saved request and text/age inputs. Gold labels and previous predictions were excluded from the request. The reference annotations were used afterward to score the saved decisions.
+
+The collection was authored and discussed during development, so a fresh process does not turn it into an independently held-out benchmark. Joke-detection accuracy does not measure age-of-acquisition accuracy, individual understanding, or content suitability. The new age checks cover every intended joke, but there are still no independent child-comprehension observations or human age-suitability ratings in the saved data.
+
+For each item's exact meanings, evidence, and age reasons, see the [readable corpus predictions](gpt6_1_sol_v3_request_rerun_2026_10_08/predictions.md) and [age comparison](gpt6_1_sol_v3_request_rerun_2026_10_08/age_predictions.md). The [saved metrics](gpt6_1_sol_v3_request_rerun_2026_10_08/metrics.json), [submitted request](gpt6_1_sol_v3_request_rerun_2026_10_08/request.md), and [run record](gpt6_1_sol_v3_request_rerun_2026_10_08/run_manifest.json) provide the supporting record.
+
+The [new age-check run record](age_checks_all_jokes_2026_10_08/run_manifest.json) and [age summaries](age_checks_all_jokes_2026_10_08/summary.json) document the 20 fresh contexts and all 100 assessments.

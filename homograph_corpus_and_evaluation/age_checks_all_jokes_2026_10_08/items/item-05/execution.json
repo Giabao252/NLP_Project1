@@ -1,0 +1,26 @@
+{
+  "item_id": "item-05",
+  "exit_code": 0,
+  "request_sha256": "75f469600c1817ef465297f4a6d02e425e61571bd01fbfc8f61b910a6a657a4b",
+  "command": [
+    "C:\\Users\\zecha\\AppData\\Local\\OpenAI\\Codex\\bin\\9691020b546a15b2\\codex.EXE",
+    "exec",
+    "--ignore-user-config",
+    "--ephemeral",
+    "--skip-git-repo-check",
+    "--sandbox",
+    "read-only",
+    "--model",
+    "gpt-6.1-sol",
+    "-c",
+    "model_reasoning_effort=\"low\"",
+    "--cd",
+    "C:\\Users\\zecha\\.codex\\visualizations\\2026\\10\\04\\01a10488-7acc-7473-8dbe-11006e918a7d\\age_checks_all_jokes_2026_10_08\\items\\item-05\\inference_workspace",
+    "--color",
+    "never",
+    "--json",
+    "--output-last-message",
+    "C:\\Users\\zecha\\.codex\\visualizations\\2026\\10\\04\\01a10488-7acc-7473-8dbe-11006e918a7d\\age_checks_all_jokes_2026_10_08\\items\\item-05\\raw_predictions.txt",
+    "-"
+  ]
+}
