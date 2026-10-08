@@ -34,7 +34,7 @@ Jokes are the positive class. An uncertain response is not counted as an accepte
 | Non-joke (30) | 0 | 30 | 0 |
 
 | Measure | Result |
-| --- | ---: | ---
+| --- | ---: |
 | Accuracy / strict accuracy | 96.0% |
 | Joke precision | 100.0% |
 | Joke recall | 90.0% |
@@ -164,7 +164,7 @@ This is variation between model runs and contexts, not an effect of changing age
 
 ## Disagreements in the 50-text detection test
 
-Two items differ from their reference joke labels. For this report, the review rating describes the interpretation problem: **0 = agreement**, **1 = supported meanings with an ambiguous comic connection**, and **2 = an intended reading is not adequately grounded in the text**. These are editorial review ratings added for discussion, not independent human annotation or a measured explanation-quality score.
+Two items differ from their reference joke labels. For this report, the review rating describes the interpretation problem: **0 = agreement**, **1 = supported meanings with an ambiguous comic connection**, and **2 = an intended reading is not adequately grounded in the text**. These are editorial review ratings added for discussion, rather than independently verified ratings.
 
 | Item | Reference label | Saved decision | Review rating | Reason |
 | --- | --- | --- | --- | --- |
@@ -177,7 +177,7 @@ Both count against joke recall. The reference labels have not been changed. The 
 
 The 50-text detection assessment used **GPT-6.1 Sol** in a fresh Codex process, supplied with the full saved request and text/age inputs. Gold labels and previous predictions were excluded from the request. The reference annotations were used afterward to score the saved decisions.
 
-The collection was authored and discussed during development, so a fresh process does not turn it into an independently held-out benchmark. Joke-detection accuracy does not measure age-of-acquisition accuracy, individual understanding, or content suitability. The new age checks cover every intended joke, but there are still no independent child-comprehension observations or human age-suitability ratings in the saved data.
+The collection was authored and discussed during development, so a fresh process does not turn it into an independently held-out benchmark. The age recommendations remain provisional estimates. The new age checks cover every intended joke, but there are still no independent child-comprehension observations or human age-suitability ratings in the saved data.
 
 For each item's exact meanings, evidence, and age reasons, see the [readable corpus predictions](gpt6_1_sol_v3_request_rerun_2026_10_08/predictions.md) and [age comparison](gpt6_1_sol_v3_request_rerun_2026_10_08/age_predictions.md). The [saved metrics](gpt6_1_sol_v3_request_rerun_2026_10_08/metrics.json), [submitted request](gpt6_1_sol_v3_request_rerun_2026_10_08/request.md), and [run record](gpt6_1_sol_v3_request_rerun_2026_10_08/run_manifest.json) provide the supporting record.
 
