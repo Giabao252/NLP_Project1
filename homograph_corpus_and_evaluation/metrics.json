@@ -2,25 +2,25 @@
   "corpus": {
     "n": 50,
     "tp": 19,
-    "fp": 0,
-    "tn": 30,
+    "fp": 4,
+    "tn": 26,
     "fn": 1,
-    "accuracy": 0.98,
-    "precision": 1.0,
+    "accuracy": 0.9,
+    "precision": 0.8260869565217391,
     "recall": 0.95,
-    "f1": 0.9743589743589743,
-    "specificity": 1.0,
-    "false_positive_rate": 0.0,
-    "balanced_accuracy": 0.975,
-    "macro_f1": 0.9789827658680117,
-    "strict_accuracy": 0.98,
-    "abstentions": 1,
-    "coverage": 0.98,
-    "answered_only_accuracy": 1.0,
-    "paired_success_count": 19,
+    "f1": 0.8837209302325582,
+    "specificity": 0.8666666666666667,
+    "false_positive_rate": 0.1333333333333333,
+    "balanced_accuracy": 0.9083333333333333,
+    "macro_f1": 0.898000815993472,
+    "strict_accuracy": 0.9,
+    "abstentions": 0,
+    "coverage": 1.0,
+    "answered_only_accuracy": 0.9,
+    "paired_success_count": 15,
     "pair_count": 20,
-    "paired_success_rate": 0.95,
-    "target_localization_including_abstentions": 1.0,
+    "paired_success_rate": 0.75,
+    "target_localization_including_abstentions": 0.85,
     "subgroups": {
       "joke": {
         "correct": 19,
@@ -31,22 +31,45 @@
         "total": 10
       },
       "modified_non_joke": {
-        "correct": 20,
+        "correct": 16,
         "total": 20
       }
     },
     "errors": [
       {
-        "id": "J07",
-        "run_id": "T006",
-        "status": "uncertain",
-        "reason": "The intended wordplay is recognizable, but a noun meaning a dry region does not explain what desert his investors would mean as an action. The travel interpretation requires supplying an unstated move to the desert. Under the contextual-compatibility rule, the intended joke needs review."
+        "id": "N02",
+        "run_id": "T007",
+        "status": "joke",
+        "reason": null
+      },
+      {
+        "id": "N03",
+        "run_id": "T011",
+        "status": "joke",
+        "reason": null
+      },
+      {
+        "id": "N11",
+        "run_id": "T012",
+        "status": "joke",
+        "reason": null
+      },
+      {
+        "id": "N05",
+        "run_id": "T020",
+        "status": "joke",
+        "reason": null
+      },
+      {
+        "id": "J15",
+        "run_id": "T025",
+        "status": "non_joke",
+        "reason": "A simple exchange about a shower stall; no wordplay detected."
       }
     ],
     "age_recommendations": {
-      "provisionally_suitable": 13,
-      "explain_vocabulary_first": 6,
-      "review_content": 1
+      "provisionally_suitable": 19,
+      "not_applicable_non_joke": 1
     },
     "scope": "Non-blind in-chat LLM pilot. Unknown sense-specific AoA; no independent explanation or age accuracy."
   },
