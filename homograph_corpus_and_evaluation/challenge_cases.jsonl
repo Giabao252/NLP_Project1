@@ -1,0 +1,7 @@
+{"id": "C01", "text": "Danny: Why so glum?\nGerry: I've got a bad case of shingles.\nDanny: Did you see a doctor?\nGerry: Yeah, and he prescribed aluminum siding.", "age": 12, "label": 1, "provenance": "instructor-provided diagnostic, known during procedure design"}
+{"id": "C02", "text": "Autobiography: when your car starts telling you about its life.", "age": 12, "label": 1, "provenance": "instructor-provided diagnostic, known during procedure design"}
+{"id": "C03", "text": "Why do elephants have a trunk? Because they don't have pockets to put stuff in.", "age": 12, "label": 1, "provenance": "instructor-provided diagnostic, known during procedure design"}
+{"id": "C04", "text": "Why do elephants have a tail? Because they don't have pockets to put stuff in.", "age": 12, "label": 0, "provenance": "instructor-provided diagnostic, known during procedure design"}
+{"id": "C05", "text": "Why do elephants have a mouth? Because they don't have pockets to put stuff in.", "age": 12, "label": 0, "provenance": "instructor-provided diagnostic, known during procedure design"}
+{"id": "C06", "text": "Why don't skeletons fight? Because they have no guts.", "age": 12, "label": 1, "provenance": "instructor-provided diagnostic, known during procedure design"}
+{"id": "C07", "text": "Why do skeletons fight? Because they have no guts.", "age": 12, "label": 0, "provenance": "instructor-provided diagnostic, known during procedure design"}
