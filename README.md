@@ -1,8 +1,8 @@
 # Homograph project — revised LLM approach
 
-Start with **llm_procedure.md** for the current version-3 procedure, then **report.md** and **corpus.md**.
+Start with **llm_procedure.md** for the current procedure, then **report.md** and **corpus.md**.
 
-Version 3 defines candidates and comic reinterpretation explicitly, uses four acceptance conditions, requests short evidence-based answers rather than step-by-step reasoning, and evaluates both senses plus connecting knowledge for the supplied age. It retains the evaluator's required field names. Version-3 effectiveness has not yet been measured.
+Define candidates and comic reinterpretation explicitly, use four acceptance conditions, request short evidence-based answers rather than step-by-step reasoning, and evaluate both senses plus connecting knowledge for the supplied age. It retains the evaluator's required field names. Version-3 effectiveness has not yet been measured.
 
 - corpus.md / corpus.jsonl: 50 texts and reference annotations.
 - llm_procedure.md: current version-3 provider-neutral prompt, without a target-word lookup table.
@@ -21,4 +21,4 @@ The run is not blind: the assistant had seen the gold annotations. Age 12 was th
 
 For new requests, supply any valid age using `--text ... --age ...`, or per-record ages with `--inputs`. Optional `age_evidence` lists in batch records are preserved. Other annotation fields are stripped. A batch `--age` override applies to every record.
 
-All saved predictions, metrics, and run_manifest.json describe version 2. They are not results for version 3. Re-running evaluate.py scores existing outputs only. Use the archived prompt to repeat the old procedure, or the current prompt for a new run and save its prompt, predictions, and manifest separately. The current scorer requires the corpus's original ages; do not score age-overridden predictions against the age-12 gold file.
+All saved predictions, metrics, and run_manifest.json. Results are exploratory. Re-running evaluate.py scores existing outputs only. Use the archived prompt to repeat the old procedure, or the current prompt for a new run and save its prompt, predictions, and manifest separately. The current scorer requires the corpus's original ages; do not score age-overridden predictions against the age-12 gold file.
