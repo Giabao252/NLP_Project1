@@ -1,0 +1,50 @@
+id,reference_class,text,candidate_a,candidate_b,similarity,weighted_distance,phones_a,phones_b,annotation_note
+P01,positive,The knight worked all night because he was on a knight shift.,night,knight,1.0,0.0,N AY T,N AY T,Night duty becomes a medieval knight’s shift.
+N01,negative,The dictionary exercise listed “night” and “knight” as two entries to compare for pronunciation.,night,knight,1.0,0.0,N AY T,N AY T,Pronunciation comparison is literal; no comic reinterpretation.
+P02,positive,Why did the sailor stare at the water? He wanted to see the sea.,sea,see,1.0,0.0,S IY,S IY,Seeing versus the sea.
+N02,negative,The dictionary exercise listed “sea” and “see” as two entries to compare for pronunciation.,sea,see,1.0,0.0,S IY,S IY,Pronunciation comparison is literal; no comic reinterpretation.
+P03,positive,Why did the baker bring a flower to work? He thought the recipe said flour.,flour,flower,1.0,0.0,F L AW ER,F L AW ER,Floral object substituted for baking flour.
+N03,negative,The dictionary exercise listed “flour” and “flower” as two entries to compare for pronunciation.,flour,flower,1.0,0.0,F L AW ER,F L AW ER,Pronunciation comparison is literal; no comic reinterpretation.
+P04,positive,The fruit seller opened a dating service to help every pear find its pair.,pair,pear,1.0,0.0,P EH R,P EH R,Fruit pear and couple pair.
+N04,negative,The dictionary exercise listed “pair” and “pear” as two entries to compare for pronunciation.,pair,pear,1.0,0.0,P EH R,P EH R,Pronunciation comparison is literal; no comic reinterpretation.
+P05,positive,The cobbler gave the singer a new sole so she could sing with soul.,sole,soul,1.0,0.0,S OW L,S OW L,Shoe sole and spirit.
+N05,negative,The dictionary exercise listed “sole” and “soul” as two entries to compare for pronunciation.,sole,soul,1.0,0.0,S OW L,S OW L,Pronunciation comparison is literal; no comic reinterpretation.
+P06,positive,The author asked for the right to write and was handed a pencil.,write,right,1.0,0.0,R AY T,R AY T,Entitlement versus writing.
+N06,negative,The dictionary exercise listed “write” and “right” as two entries to compare for pronunciation.,write,right,1.0,0.0,R AY T,R AY T,Pronunciation comparison is literal; no comic reinterpretation.
+P07,positive,"The pilot wanted a plain meal, so the chef served it on a plane.",plane,plain,1.0,0.0,P L EY N,P L EY N,Simple food versus aircraft.
+N07,negative,The dictionary exercise listed “plane” and “plain” as two entries to compare for pronunciation.,plane,plain,1.0,0.0,P L EY N,P L EY N,Pronunciation comparison is literal; no comic reinterpretation.
+P08,positive,The postman took his son to work; he called it male mail.,mail,male,1.0,0.0,M EY L,M EY L,Gender versus post.
+N08,negative,The dictionary exercise listed “mail” and “male” as two entries to compare for pronunciation.,mail,male,1.0,0.0,M EY L,M EY L,Pronunciation comparison is literal; no comic reinterpretation.
+P09,positive,"The astronomer asked for the sun, but his assistant brought his son.",sun,son,1.0,0.0,S AH N,S AH N,Star versus child.
+N09,negative,The dictionary exercise listed “sun” and “son” as two entries to compare for pronunciation.,sun,son,1.0,0.0,S AH N,S AH N,Pronunciation comparison is literal; no comic reinterpretation.
+P10,positive,"The driver said he needed a break, and the mechanic checked his brake.",brake,break,1.0,0.0,B R EY K,B R EY K,Rest versus vehicle stopping system.
+N10,negative,The dictionary exercise listed “brake” and “break” as two entries to compare for pronunciation.,brake,break,1.0,0.0,B R EY K,B R EY K,Pronunciation comparison is literal; no comic reinterpretation.
+P11,positive,The zookeeper wrote Dear Deer on the envelope to his favorite animal.,deer,dear,1.0,0.0,D IH R,D IH R,Term of address versus animal.
+N11,negative,The dictionary exercise listed “deer” and “dear” as two entries to compare for pronunciation.,deer,dear,1.0,0.0,D IH R,D IH R,Pronunciation comparison is literal; no comic reinterpretation.
+P12,positive,The perfume shop charged just one cent for its newest scent.,cent,scent,1.0,0.0,S EH N T,S EH N T,Money versus smell.
+N12,negative,The dictionary exercise listed “cent” and “scent” as two entries to compare for pronunciation.,cent,scent,1.0,0.0,S EH N T,S EH N T,Pronunciation comparison is literal; no comic reinterpretation.
+P13,positive,"The insect asked, To be or not to bee?",be,bee,1.0,0.0,B IY,B IY,Existence versus insect.
+N13,negative,The dictionary exercise listed “be” and “bee” as two entries to compare for pronunciation.,be,bee,1.0,0.0,B IY,B IY,Pronunciation comparison is literal; no comic reinterpretation.
+P14,positive,"At the butcher’s conference, everyone was excited to meet the meat.",meet,meat,1.0,0.0,M IY T,M IY T,Meeting people versus food.
+N14,negative,The dictionary exercise listed “meet” and “meat” as two entries to compare for pronunciation.,meet,meat,1.0,0.0,M IY T,M IY T,Pronunciation comparison is literal; no comic reinterpretation.
+P15,positive,The fox became an author because he had a long tail and a longer tale.,tail,tale,1.0,0.0,T EY L,T EY L,Body part versus story.
+N15,negative,The dictionary exercise listed “tail” and “tale” as two entries to compare for pronunciation.,tail,tale,1.0,0.0,T EY L,T EY L,Pronunciation comparison is literal; no comic reinterpretation.
+P16,positive,The tired baker said all he wanted was peace and a piece of cake.,peace,piece,1.0,0.0,P IY S,P IY S,Tranquility versus portion.
+N16,negative,The dictionary exercise listed “peace” and “piece” as two entries to compare for pronunciation.,peace,piece,1.0,0.0,P IY S,P IY S,Pronunciation comparison is literal; no comic reinterpretation.
+P17,positive,"The sailor said the rope was not ready; the apprentice replied, Knot ready?",knot,not,1.0,0.0,N AA T,N AA T,Negation versus rope knot.
+N17,negative,The dictionary exercise listed “knot” and “not” as two entries to compare for pronunciation.,knot,not,1.0,0.0,N AA T,N AA T,Pronunciation comparison is literal; no comic reinterpretation.
+P18,positive,Our clock is so possessive it calls every hour our hour.,hour,our,1.0,0.0,AW ER,AW ER,Possession versus duration.
+N18,negative,The dictionary exercise listed “hour” and “our” as two entries to compare for pronunciation.,hour,our,1.0,0.0,AW ER,AW ER,Pronunciation comparison is literal; no comic reinterpretation.
+P19,positive,"The tailor said, Do not waste fabric; use it around the waist.",waist,waste,1.0,0.0,W EY S T,W EY S T,Discard versus body part.
+N19,negative,The dictionary exercise listed “waist” and “waste” as two entries to compare for pronunciation.,waist,waste,1.0,0.0,W EY S T,W EY S T,Pronunciation comparison is literal; no comic reinterpretation.
+P20,positive,"The librarian said no shouting was allowed, so I read the rule aloud.",allowed,aloud,1.0,0.0,AH L AW D,AH L AW D,Permission versus spoken volume.
+N20,negative,The dictionary exercise listed “allowed” and “aloud” as two entries to compare for pronunciation.,allowed,aloud,1.0,0.0,AH L AW D,AH L AW D,Pronunciation comparison is literal; no comic reinterpretation.
+P21,positive,"The vampire bought a steak, but the hunter asked for a stake.",steak,stake,1.0,0.0,S T EY K,S T EY K,Meat versus pointed weapon.
+N21,negative,The dictionary exercise listed “steak” and “stake” as two entries to compare for pronunciation.,steak,stake,1.0,0.0,S T EY K,S T EY K,Pronunciation comparison is literal; no comic reinterpretation.
+P22,positive,Why was the wind sad? It blew so hard it turned blue.,blue,blew,1.0,0.0,B L UW,B L UW,Wind action versus color/mood.
+N22,negative,The dictionary exercise listed “blue” and “blew” as two entries to compare for pronunciation.,blue,blew,1.0,0.0,B L UW,B L UW,Pronunciation comparison is literal; no comic reinterpretation.
+P23,positive,The carpenter was bored until he found a board to work on.,board,bored,1.0,0.0,B AO R D,B AO R D,State of mind versus wood.
+N23,negative,The dictionary exercise listed “board” and “bored” as two entries to compare for pronunciation.,board,bored,1.0,0.0,B AO R D,B AO R D,Pronunciation comparison is literal; no comic reinterpretation.
+S24,supplied_probe,Why did the cat stop dating the cad? Because she realized he was only purr-suing her for his own gain!,cat,cad,0.8667,0.4,K AE T,K AE D,Cat/cad supplies context; purr-suing/pursuing is the stronger phonetic joke.
+S25,supplied_probe,Why did the cat start working at a bank? Because she wanted to turn her cat-nap into cash.,cat,cash,0.7333,0.8,K AE T,K AE SH,"Bank/cash context exists, but the cat-nap-to-cash substitution is weak."
+S26,supplied_probe,"When the band broke up, it wasn’t drama — it was just drum!",drum,drama,0.7,1.5,D R AH M,D R AA M AH,Sound similarity and music context exist; grammatical substitution is weak.
