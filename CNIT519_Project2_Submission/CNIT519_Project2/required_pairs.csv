@@ -1,0 +1,7 @@
+a,b,phones_a,phones_b,weighted_distance,similarity
+cat,cad,K AE T,K AE D,0.4,0.8667
+cat,cash,K AE T,K AE SH,0.8,0.7333
+drum,drama,D R AH M,D R AA M AH,1.5,0.7
+knight,night,N AY T,N AY T,0.0,1.0
+bat,pat,B AE T,P AE T,0.4,0.8667
+pat,pit,P AE T,P IH T,0.52,0.8267
