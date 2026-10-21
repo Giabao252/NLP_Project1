@@ -3,33 +3,114 @@ from pathlib import Path
 from phonetics import compare
 ROOT=Path(__file__).resolve().parent
 # Positive instances are deliberately authored stimulus labels, NOT independently judged classifier predictions.
-PAIRS=[
-('night','knight','The knight worked all night because he was on a knight shift.','Night duty becomes a medieval knight’s shift.'),
-('sea','see','Why did the sailor stare at the water? He wanted to see the sea.','Seeing versus the sea.'),
-('flour','flower','Why did the baker bring a flower to work? He thought the recipe said flour.','Floral object substituted for baking flour.'),
-('pair','pear','The fruit seller opened a dating service to help every pear find its pair.','Fruit pear and couple pair.'),
-('sole','soul','The cobbler gave the singer a new sole so she could sing with soul.','Shoe sole and spirit.'),
-('write','right','The author asked for the right to write and was handed a pencil.','Entitlement versus writing.'),
-('plane','plain','The pilot wanted a plain meal, so the chef served it on a plane.','Simple food versus aircraft.'),
-('mail','male','The postman took his son to work; he called it male mail.','Gender versus post.'),
-('sun','son','The astronomer asked for the sun, but his assistant brought his son.','Star versus child.'),
-('brake','break','The driver said he needed a break, and the mechanic checked his brake.','Rest versus vehicle stopping system.'),
-('deer','dear','The zookeeper wrote Dear Deer on the envelope to his favorite animal.','Term of address versus animal.'),
-('cent','scent','The perfume shop charged just one cent for its newest scent.','Money versus smell.'),
-('be','bee','The insect asked, To be or not to bee?','Existence versus insect.'),
-('meet','meat','At the butcher’s conference, everyone was excited to meet the meat.','Meeting people versus food.'),
-('tail','tale','The fox became an author because he had a long tail and a longer tale.','Body part versus story.'),
-('peace','piece','The tired baker said all he wanted was peace and a piece of cake.','Tranquility versus portion.'),
-('knot','not','The sailor said the rope was not ready; the apprentice replied, Knot ready?','Negation versus rope knot.'),
-('hour','our','Our clock is so possessive it calls every hour our hour.','Possession versus duration.'),
-('waist','waste','The tailor said, Do not waste fabric; use it around the waist.','Discard versus body part.'),
-('allowed','aloud','The librarian said no shouting was allowed, so I read the rule aloud.','Permission versus spoken volume.'),
-('steak','stake','The vampire bought a steak, but the hunter asked for a stake.','Meat versus pointed weapon.'),
-('blue','blew','Why was the wind sad? It blew so hard it turned blue.','Wind action versus color/mood.'),
-('board','bored','The carpenter was bored until he found a board to work on.','State of mind versus wood.'),
-('cat','cad','Why did the cat stop dating the cad? Because she realized he was only purr-suing her for his own gain!','Cat/cad supplies context; purr-suing/pursuing is the stronger phonetic joke.'),
-('cat','cash','Why did the cat start working at a bank? Because she wanted to turn her cat-nap into cash.','Bank/cash context exists, but the cat-nap-to-cash substitution is weak.'),
-('drum','drama','When the band broke up, it wasn’t drama — it was just drum!','Sound similarity and music context exist; grammatical substitution is weak.'),
+PAIRS = [
+    ('compliment', 'complement',
+     'The food critic gave the chef a compliment because the sauce was the perfect complement to the meal.',
+     'Praise versus something that completes or enhances another thing.'),
+
+    ('stationary', 'stationery',
+     'The stationery shop had such beautiful notebooks that customers stood stationary just to admire them.',
+     'Remaining motionless versus writing materials.'),
+
+    ('principal', 'principle',
+     'The school principal insisted that honesty was the most important principle, especially during exams.',
+     'School administrator versus a fundamental rule or belief.'),
+
+    ('discreet', 'discrete',
+     'The mathematician kept the discrete data points so discreet that even the other researchers could not find them.',
+     'Carefully secretive versus separate and individually distinct.'),
+
+    ('council', 'counsel',
+     'The city council hired legal counsel to determine whether its endless meetings were legally necessary.',
+     'Governing committee versus professional advice or legal representation.'),
+
+    ('ascent', 'assent',
+     'The climber refused to begin the dangerous ascent until every member of the expedition gave their assent.',
+     'Upward movement versus agreement or approval.'),
+
+    ('cereal', 'serial',
+     'The detective finally caught the serial cereal thief after discovering breakfast crumbs at every crime scene.',
+     'Breakfast food versus something occurring repeatedly in sequence.'),
+
+    ('palette', 'palate',
+     'The chef used a colorful palette of ingredients to impress every guest whose palate demanded something extraordinary.',
+     'Range of colors versus the sense of taste.'),
+
+    ('capital', 'capitol',
+     'The tour guide said the capital had one Capitol building but enough political arguments to fill a hundred.',
+     'Seat of government versus a legislative building.'),
+
+    ('currant', 'current',
+     'The baker checked the current price of currants and immediately decided that raisins were more affordable.',
+     'Small dried fruit versus something happening in the present.'),
+
+    ('marshal', 'martial',
+     'The town marshal opened a martial arts academy because chasing criminals had become his daily workout.',
+     'Law enforcement officer versus matters relating to combat.'),
+
+    ('prophet', 'profit',
+     'The investment firm hired a prophet to predict its profit, but he only foresaw an expensive consultation fee.',
+     'Person claiming prophetic knowledge versus financial gain.'),
+
+    ('medal', 'meddle',
+     'The coach promised a medal to any player who managed not to meddle in his carefully planned strategy.',
+     'Award for achievement versus interfering in someone else’s affairs.'),
+
+    ('altar', 'alter',
+     'The wedding planner refused to alter the altar, even after discovering that it completely blocked the entrance.',
+     'Ceremonial structure versus the act of changing something.'),
+
+    ('canvas', 'canvass',
+     'The politician commissioned a portrait on canvas while campaign volunteers went door to door to canvass for votes.',
+     'Painting material versus systematically soliciting support.'),
+
+    ('sensor', 'censor',
+     'The museum installed a sensor to detect visitors attempting to censor the controversial exhibition.',
+     'Detection device versus suppression or removal of information.'),
+
+    ('allusion', 'illusion',
+     'The magician made an allusion to his disappearing assistant before creating an illusion that made the entire audience gasp.',
+     'Indirect reference versus deceptive visual appearance.'),
+
+    ('appraise', 'apprise',
+     'The antique dealer was instructed to appraise the mysterious vase and apprise its owner before the cat knocked it over.',
+     'Evaluate monetary value versus inform someone of a situation.'),
+
+    ('elicit', 'illicit',
+     'The detective tried to elicit a confession about the illicit underground cake-smuggling operation.',
+     'Draw out information versus something forbidden or unlawful.'),
+
+    ('emigrate', 'immigrate',
+     'The traveler decided to emigrate from Iceland and immigrate to Spain because his winter wardrobe needed a vacation.',
+     'Leaving one country versus entering another to reside.'),
+
+    ('prescribe', 'proscribe',
+     'The doctor wanted to prescribe afternoon naps, but the productivity consultant insisted on proscribing them.',
+     'Recommend or authorize a treatment versus officially forbid something.'),
+
+    ('adverse', 'averse',
+     'The sailor was averse to sailing in adverse weather, especially after his umbrella flew into the ocean.',
+     'Unfavorable conditions versus reluctance or opposition.'),
+
+    ('parameter', 'perimeter',
+     'The security engineer adjusted one parameter and accidentally activated alarms around the entire perimeter of the parking lot.',
+     'Variable or setting versus the outer boundary of an area.'),
+
+    ('ingenious', 'ingenuous',
+     'The ingenious magician pretended to be ingenuous so the audience would never suspect how carefully he had planned his tricks.',
+     'Inventively clever versus innocently trusting or naive.'),
+
+    ('vocation', 'vacation',
+     'The career counselor misunderstood my request for a vocation and immediately booked me a vacation in the Caribbean.',
+     'Profession or calling versus a period of leisure and travel.'),
+
+    ('collusion', 'collision',
+     'The insurance investigator suspected collusion when both drivers rehearsed exactly the same explanation for their collision.',
+     'Secret cooperation for deception versus a physical impact.'),
+
+    ('collaborate', 'corroborate',
+     'The detectives agreed to collaborate to corroborate the witness testimony but spent the entire meeting arguing about who should take notes.',
+     'Working together versus independently confirming evidence.')
 ]
 rows=[]
 for idx,(a,b,joke,reason) in enumerate(PAIRS,1):
@@ -45,6 +126,6 @@ for idx,(a,b,joke,reason) in enumerate(PAIRS,1):
 with (ROOT/'evaluation.csv').open('w',newline='',encoding='utf-8') as f:
     writer=csv.DictWriter(f,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
 with (ROOT/'required_pairs.csv').open('w',newline='',encoding='utf-8') as f:
-    pairs=[('cat','cad'),('cat','cash'),('drum','drama'),('knight','night'),('bat','pat'),('pat','pit')]
-    writer=csv.DictWriter(f,fieldnames=['a','b','phones_a','phones_b','weighted_distance','similarity']);writer.writeheader();writer.writerows(compare(a,b) for a,b in pairs)
+    required_pairs=[('cat','cad'),('cat','cash'),('drum','drama'),('knight','night'),('bat','pat'),('pat','pit')]
+    writer=csv.DictWriter(f,fieldnames=['a','b','phones_a','phones_b','weighted_distance','similarity']);writer.writeheader();writer.writerows(compare(a,b) for a,b in required_pairs)
 print('Total:',len(rows),'positives:',sum(r['reference_class']=='positive' for r in rows),'negatives:',sum(r['reference_class']=='negative' for r in rows),'probes:',sum(r['reference_class']=='supplied_probe' for r in rows))

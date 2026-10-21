@@ -2,6 +2,9 @@
 import re
 import cmudict
 LEXICON=cmudict.dict()
+# Explicit dictionary supplement for the evaluation corpus: currant/current
+# share this US English pronunciation. Other unknown words still raise KeyError.
+PRONUNCIATION_OVERRIDES={'currant': ['K', 'ER1', 'AH0', 'N', 'T']}
 VOWELS={'AA','AE','AH','AO','AW','AY','EH','ER','EY','IH','IY','OW','OY','UH','UW'}
 PLACE={'P':'bilabial','B':'bilabial','M':'bilabial','W':'labial-velar','F':'labiodental','V':'labiodental','TH':'dental','DH':'dental','T':'alveolar','D':'alveolar','N':'alveolar','S':'alveolar','Z':'alveolar','L':'alveolar','R':'postalveolar','SH':'postalveolar','ZH':'postalveolar','CH':'postalveolar','JH':'postalveolar','Y':'palatal','K':'velar','G':'velar','NG':'velar','HH':'glottal'}
 MANNER={**dict.fromkeys(['P','B','T','D','K','G'],'stop'),**dict.fromkeys(['F','V','TH','DH','S','Z','SH','ZH','HH'],'fricative'),**dict.fromkeys(['CH','JH'],'affricate'),**dict.fromkeys(['M','N','NG'],'nasal'),**dict.fromkeys(['L','R','W','Y'],'approximant')}
@@ -13,8 +16,12 @@ def phonemes(word):
     if not words: raise ValueError('No alphabetic word')
     phones=[]
     for w in words:
-        if w not in LEXICON: raise KeyError(f'Out-of-vocabulary: {w}')
-        phones.extend(LEXICON[w][0])
+        if w in PRONUNCIATION_OVERRIDES:
+            phones.extend(PRONUNCIATION_OVERRIDES[w])
+        elif w in LEXICON:
+            phones.extend(LEXICON[w][0])
+        else:
+            raise KeyError(f'Out-of-vocabulary: {w}')
     return [re.sub(r'\d','',p) for p in phones]
 def substitute(a,b):
     if a==b:return 0.
