@@ -1,5 +1,9 @@
 # CNIT 519 — Project 2: Semantic and Phonetic Wordplay Detection
 
+Current stimulus revision: the first word of each user-supplied pair is retained, all 27 second words have new dictionary-word spellings, and all jokes are rewritten with matched literal controls. The approved spelling rule permits the smallest workable multi-letter changes when a one-letter change is unsuitable. See [the current evaluation and per-joke analysis](EVALUATION_ANALYSIS.md) for the 54-record run, [word-change audit](pair_variants.csv), and [machine-readable results](evaluation_analysis.json).
+
+Every joke body uses **only its current second word**. Twenty-four jokes use narrative or dialogue openings, and three retain the traditional question-and-answer form. All retain a setup and a wordplay payoff. The first word is inferred from the setup; it appears only in evaluation metadata, explanatory annotations and literal controls. Both the build and analysis enforce the whole-word constraint and require a majority of jokes to avoid Why/Because openings.
+
 ## 1. Objective and continuity with Project 1
 
 This project extends the submitted Project 1 approach to detect jokes based on either **meaning ambiguity** (same spelling, two supported meanings) or **sound-based wordplay** (different forms with similar pronunciations, both supported by the context). Similarity alone is not evidence of a joke. A joke must additionally supply a plausible setup, a reinterpretation/punchline, and an incongruity resolved by the alternate interpretation. Partial failures and weak examples should be reported rather than automatically relabeled as jokes.
@@ -17,7 +21,7 @@ The Project 1 archive contains the written `request_llm_procedure.md`, corpus, s
 | 5. **Phonetic similarity (NEW)** | Assign continuous rather than binary similarity | Custom articulatory-weighted Levenshtein alignment on dictionary phone sequences | Related vowels, place/manner neighbors, and voicing contrasts receive different costs; insertions/deletions capture different-length words | Six exact numeric comparisons in `required_pairs.csv` |
 | 6. Semantic connection / incongruity | Test whether both readings are supported and whether their switch explains the unexpected outcome | Retain Project 1 three gates (meaning; contextual evidence; explanatory connection), extended to two related-sounding strings | Separates phonetic resemblance from humorous use | Manual qualitative analysis of three teacher examples; full automatic integration not yet validated |
 | 7. Age suitability | Identify unfamiliar senses, switch difficulty, and inappropriate content | Project 1 age-specific rubric and separate suitability gate | Vocabulary comprehension and humor recognition are different constructs | Saved Project 1 assessed 20 jokes at 5, 8, 12, 16, 30 = 100 judgments; Project 2 did not rerun age judgments |
-| 8. Evaluation | Check retrieval, scores, and false positives from sound alone | Six required pairs, 23 intended positive and 23 matched negative texts, 3 assigned probes | Paired negative examples keep sound overlap while eliminating comic reinterpretation | 49 labeled/probe records in `evaluation.csv`. Labels represent authored intentions, NOT blind classifier predictions |
+| 8. Evaluation | Check retrieval, scores, and false positives from sound alone | Six required pairs, 27 rewritten intended positives and 27 matched negative texts | Paired negative examples keep sound overlap while eliminating comic reinterpretation | 54 records in `evaluation.csv`; 1 identical-phone pair and 26 differing-phone pairs; 25/27 meet the 0.70 cutoff. Labels represent authored intentions, NOT blind classifier predictions |
 
 ### Original Project 1 detection evidence
 
@@ -26,6 +30,8 @@ The Project 1 archive contains the written `request_llm_procedure.md`, corpus, s
 ## 3. Phone representation, exact formula, and implementation
 
 The Python package `cmudict` provides first dictionary pronunciation in **ARPAbet** for each orthographic word, e.g. `cat = K AE T`. Phoneme stress digits are removed before scoring. No existing similarity metric is used; the following is an explicitly specified custom weighted dynamic-programming algorithm in `phonetics.py`.
+
+The current corpus also uses an explicit pronunciation supplement for `currant`: `K ER1 AH0 N T`. Other unknown words still raise an exception. The scoring formula remains unchanged. New scores compare each original first word with its changed second word; the original second word, original score and spelling edit count are retained in `pair_variants.csv`.
 
 Let A = (a₁, …, aₘ), B = (b₁, …, bₙ) be phoneme sequences. Set insertion/deletion cost to 1 and define substitution cost c(a,b):
 
@@ -67,11 +73,13 @@ These scores preserve meaningful contrasts: /t/ and /d/ are the same manner/plac
 
 This deliberately separates **phonetic score** from **comic-connection decision**, avoiding inflated results on instructor prompts.
 
-## 6. New stimuli: 23 positives and 23 negatives
+## 6. Current stimuli: 27 intended positives and 27 negatives
 
-The attached `evaluation.csv` contains **23 intended positive sound-play jokes** and **23 parallel negative examples**. The negative sentence for each pair reports that the two expressions appeared in a dictionary pronunciation comparison: the utterance pair is equally similar, but there is no surprise, incompatible interpretation, or resulting joke. This is a controlled test of the principle that *sound resemblance alone must not trigger a positive label*.
+The attached `evaluation.csv` contains **27 intended positive sound-play jokes** and **27 parallel negative examples**. Each original first word is paired with a changed second word: 22 changes need one letter edit, three need two, and two need three. All replacements are in the installed pronunciation dictionary and are distinct from both the original second word and the first word. Some changes are inflections; others create new meanings, such as `palate -> palace`, `martial -> martian`, and `censor -> censer`. All joke texts have been rewritten around the new interpretations, mentioning only the second word. Eight weaker sound, meaning or grammatical connections are flagged in the editorial review in `EVALUATION_ANALYSIS.md`.
 
-The three instructor examples appear as an **additional three separate probes**, producing **49 total records**, not 49 scored automatic classification outcomes. The 23 intended jokes are authored examples and some may be less humorous or linguistically natural than others. A human annotation/quality pass, preferably blind to the expected label, is a next step before valid accuracy/F1 reporting.
+Each negative is a literal dictionary comparison of the same two words, so it has exactly the same phonetic score as its positive counterpart. The former index-based `supplied_probe` assignment has been removed; all 27 rewritten examples have a negative control. The three instructor examples discussed in Section 5 remain historical qualitative examples and are not rows in this revised dataset.
+
+The 27 pairs yield 22 distinct scores from 0.6275 to 1.0000 under the unchanged model, with mean 0.8073 (original mean 0.9422). Twenty-five pairs meet the 0.70 cutoff; `ingenious/ingenue` (0.6913) and `collaborate/corroborates` (0.6275) are explicitly reported as misses. A diagnostic sound-only rule at this cutoff produces 25 true positives, 25 false positives, two true negatives and two false negatives: 50% accuracy, 50% precision, 92.59% recall and 64.94% F1 against authored labels. These are not results from an integrated semantic classifier or a measured audience humor response. Human annotation, preferably blind to the expected label, remains necessary.
 
 ## 7. Integration and evaluation protocol
 
@@ -82,7 +90,7 @@ The three instructor examples appear as an **additional three separate probes**,
 5. Predict `semantic`, `phonetic`, `mixed`, `non_joke`, or `uncertain`, with a short evidence trace; separately rate age comprehension and content suitability.
 6. Freeze the prompts, threshold, and dataset before scoring. Evaluate each component separately: retrieval recall@K; scores on homophones and near pairs; semantic connection accuracy on negative pairs; final joke precision/recall/F1 and confusion matrix; age calibration only with ground truth evidence.
 
-**What is completed:** exact documented sound formula; executable scoring and candidate-ranking functions; six required computed comparisons; qualitative three-case analysis; 23 positive and 23 negative stimuli; reuse and documentation of Project 1 methods and existing results. **What remains:** fully automatic extraction/segmentation for novel puns, integration into the original LLM semantic judge, and a blind Project 2 classification run. Consequently this submission makes no unverified new classifier accuracy claim.
+**What is completed:** exact documented sound formula; executable scoring and candidate-ranking functions; six required computed comparisons; historical qualitative three-case analysis; 27 rewritten jokes and 27 matched negative stimuli; reproducible artifact validation, retrieval diagnostics, sound-only threshold evaluation and an editorial review of every joke; reuse and documentation of Project 1 methods and existing results. **What remains:** fully automatic extraction/segmentation for novel puns, integration into the original LLM semantic judge, independent humor annotation, and a blind Project 2 classification run. Consequently this submission makes no unverified new semantic classifier accuracy claim.
 
 ## 8. How to reproduce
 
@@ -92,9 +100,10 @@ Python with `cmudict` installed:
 pip install cmudict
 python phonetics.py
 python build_evaluation.py
+python analyze_evaluation.py
 ```
 
-Run from the `CNIT519_Project2` folder. The first command prints the six pair scores; the second reconstructs `required_pairs.csv` and `evaluation.csv`. Compare the generated files to the bundled CSVs. The original Project 1 files are retained in the independently supplied Project 1 archive; this submission does not overwrite them.
+Run from the `CNIT519_Project2` folder. The first Python command prints the six pair scores; the second reconstructs `required_pairs.csv`, `evaluation.csv` and `pair_variants.csv`; the third validates the artifacts and regenerates `EVALUATION_ANALYSIS.md` and `evaluation_analysis.json`. If using this workspace's local dependency installation, set `PYTHONPATH` to `.project2_dependencies` and use a working Python executable. The original Project 1 files are retained in the independently supplied Project 1 archive; this submission does not overwrite them.
 
 ## 9. Reference resources
 
