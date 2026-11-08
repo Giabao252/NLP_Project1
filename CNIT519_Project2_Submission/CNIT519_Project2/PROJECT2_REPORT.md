@@ -1,53 +1,86 @@
-# CNIT 519 — Project 2: Semantic and Phonetic Wordplay Detection
+# Project 2: Detecting phonetic wordplay: extending the homograph joke detector
 
-## 1. Objective and continuity with Project 1
+## Project summary
 
-This project extends the submitted Project 1 approach to detect jokes based on either **meaning ambiguity** (same spelling, two supported meanings) or **sound-based wordplay** (different forms with similar pronunciations, both supported by the context). Similarity alone is not evidence of a joke. A joke must additionally supply a plausible setup, a reinterpretation/punchline, and an incongruity resolved by the alternate interpretation. Partial failures and weak examples should be reported rather than automatically relabeled as jokes.
+Project 1 asked whether a text uses **one written word in two meanings** to make a coherent joke. Project 2 extends that to **sound-based wordplay**: two different words or phrases that are pronounced the same or almost the same, such as *night* and *knight*. The rule carried through the whole project is that **sound is not humor**. A high sound-similarity score only opens a *candidate*, a possible pun. The Project 1 meaning, evidence and incongruity checks decide whether the text is actually a joke.
 
-The Project 1 archive contains the written `request_llm_procedure.md`, corpus, saved model predictions and reports, but no independently reusable program implementing the Project 1 language-model decision. Project 2 thus provides a **runnable phonetic-candidate and similarity module** plus a documented semantic decision rubric. It does **not** falsely claim to have reproduced the original language-model classification run or implemented a complete automatic joke classifier. A prospective full system would connect the phonetic module to the existing meaning/evidence/connection prompts and evaluate its predictions without revealing reference labels.
+What Project 2 adds is a runnable phonetic module: pronunciations from the CMU Pronouncing Dictionary, a **graded** similarity score between 0 and 1 (not a yes/no match), and a function that ranks similar-sounding candidates from a vocabulary. The module produces the six scores the assignment required, and it was applied to the three instructor texts plus two further examples written by the team.
 
-## 2. Component decomposition, method, motivation, evidence
+This is **not** a complete automatic joke classifier. The phonetic module and the Project 1 language-model checks are not yet connected, and no blind Project 2 classification run has been done. The report therefore makes **no accuracy claim** for Project 2. The only detection figures below (96.0% accuracy, 94.74% F1) are Project 1 results on its authored 50-text collection and are not evidence of Project 2 performance.
 
-| Component | Goal | Method | Why appropriate | Current result/evidence |
-|---|---|---|---|---|
-| 1. Input validation | Screen records and track age | Project 1 schema: `id`, `text`, age 0–120 | Avoids interpreting malformed records as non-jokes | Project 1 decision prompt saved; not rerun in Project 2 |
-| 2. Text/utterance identification | Surface exact words, idioms, substrings and candidate pairs | Project 1 candidate-selection instructions plus token/phrase segmentation | Wordplay spans can be phrases and playful subwords | Project 1 corpus includes 50 records; Project 2 dataset provides explicit candidate pairs for reproducible pair scoring |
-| 3. Semantic ambiguity identification | Find distinct senses for an identical expression | Project 1 language-model meaning gate, textual quotes, and evidence checks | Prevents dictionary ambiguity alone from counting | Project 1 50-text test: 18/20 positives accepted, 30/30 negatives rejected, one positive rejected, one uncertain |
-| 4. **Phonetic candidate retrieval (NEW)** | Find different utterances pronounced identically or nearly so | CMU Pronouncing Dictionary ARPAbet pronunciations; `find_similar_utterances()` ranks a supplied vocabulary, threshold 0.70 | Pronunciations are more reliable than raw character overlap; ranked retrieval offers candidates for a later semantic check | Runnable implementation; pairs above threshold include the six specified pairs; open-vocabulary retrieval is limited by dictionary coverage |
-| 5. **Phonetic similarity (NEW)** | Assign continuous rather than binary similarity | Custom articulatory-weighted Levenshtein alignment on dictionary phone sequences | Related vowels, place/manner neighbors, and voicing contrasts receive different costs; insertions/deletions capture different-length words | Six exact numeric comparisons in `required_pairs.csv` |
-| 6. Semantic connection / incongruity | Test whether both readings are supported and whether their switch explains the unexpected outcome | Retain Project 1 three gates (meaning; contextual evidence; explanatory connection), extended to two related-sounding strings | Separates phonetic resemblance from humorous use | Manual qualitative analysis of three teacher examples; full automatic integration not yet validated |
-| 7. Age suitability | Identify unfamiliar senses, switch difficulty, and inappropriate content | Project 1 age-specific rubric and separate suitability gate | Vocabulary comprehension and humor recognition are different constructs | Saved Project 1 assessed 20 jokes at 5, 8, 12, 16, 30 = 100 judgments; Project 2 did not rerun age judgments |
-| 8. Evaluation | Check retrieval, scores, and false positives from sound alone | Six required pairs, 23 intended positive and 23 matched negative texts, 3 assigned probes | Paired negative examples keep sound overlap while eliminating comic reinterpretation | 49 labeled/probe records in `evaluation.csv`. Labels represent authored intentions, NOT blind classifier predictions |
+## What counts as phonetic wordplay?
 
-### Original Project 1 detection evidence
+A candidate is a word, phrase or meaningful substring whose sound could be read as a second expression. A phonetic joke needs three things beyond the sound resemblance:
 
-20 intended jokes / 30 negatives. In the saved run, 18 true positives, 0 false positives, 30 true negatives, 1 rejected positive, 1 uncertain positive. With `uncertain` counted as non-joke, strict accuracy = 48/50 = **96.0%**; precision **100.0%**, recall **90.0%**, F1 **94.74%**. These are *Project 1* in-sample authored-corpus results, not a measured Project 2 success rate. Sense-specific numerical acquisition ages were not verified in the original archive.
+1. a **setup** that supports the first reading,
+2. a **second reading** that the sound invites and the context supports,
+3. an **unexpected connection** between the two that explains the punchline.
 
-## 3. Phone representation, exact formula, and implementation
+For example, a sentence that says "the baker thought the recipe said *flower*" works because the baking context supports *flour* and the substitution creates a surprise. A sentence that merely lists "*flour* and *flower*" in a pronunciation exercise has identical sound similarity but no comic reinterpretation, so it is not a joke. Weak or partial cases are reported as weak rather than relabelled as jokes.
 
-The Python package `cmudict` provides first dictionary pronunciation in **ARPAbet** for each orthographic word, e.g. `cat = K AE T`. Phoneme stress digits are removed before scoring. No existing similarity metric is used; the following is an explicitly specified custom weighted dynamic-programming algorithm in `phonetics.py`.
+## Method
 
-Let A = (a₁, …, aₘ), B = (b₁, …, bₙ) be phoneme sequences. Set insertion/deletion cost to 1 and define substitution cost c(a,b):
+### Components
 
-- Identical phones: c = 0.
-- Two vowels: c = min(0.95, 0.20 + 0.16×|heightₐ−heightᵦ| + 0.14×|backnessₐ−backnessᵦ|), with illustrative hand-coded categorical vowel coordinates (`VFEAT` in code). These coordinates are not empirical acoustic formant data.
-- Two consonants: c = min(1, 0.20 + 0.35×I[manner differs] + 0.25×I[place differs] + 0.20×I[voicing differs]). `I` is 1 if true and 0 otherwise.
-- Vowel ↔ consonant: c = 1.
+| Component | Source | Role |
+| --- | --- | --- |
+| Input validation, text segmentation, candidate selection | Project 1 | Screen records, find the words or spans that could carry wordplay |
+| Meaning ambiguity, evidence and connection checks | Project 1 | Decide whether both readings are supported and explain the switch |
+| Age-of-acquisition and content suitability | Project 1 | Not rerun in Project 2 |
+| **Phonetic candidate retrieval** | **New** | `find_similar_utterances(word, vocabulary, min_similarity=0.70, top_k=20)` returns possible sound-alikes |
+| **Phonetic similarity score** | **New** | Graded 0–1 score from a weighted alignment of pronunciations |
 
-The weighted Levenshtein recurrence is:
+### Representing sound
 
-`D(0,j)=j`, `D(i,0)=i`
+Each word is converted to **ARPAbet** (a symbol for each English sound) using the CMU Pronouncing Dictionary through the Python `cmudict` package. For example, *cat* is K AE T and *drama* is D R AA M AH. The first dictionary pronunciation is used, and stress digits are removed. A phrase is converted word by word and the sounds are joined. A word missing from the dictionary raises an error and is skipped by the retrieval function. There is deliberately **no fallback to spelling**, because that would hide errors.
 
-`D(i,j) = min { D(i−1,j)+1, D(i,j−1)+1, D(i−1,j−1)+c(aᵢ,bⱼ) }`.
+The library supplies pronunciations only. The similarity measure is the team's own design.
 
-The normalized score is **S(A,B) = max(0, 1 − D(m,n)/max(m,n))**, between 0 (completely different under this scale) and 1 (identical phone sequence). The score is not a calibrated perceptual probability. The exploratory 0.70 retrieval cutoff is not optimized on independent training data. Complexity per pair is O(mn) time and O(mn) memory, where m,n are phone counts. For phrases, the component concatenates each word's pronunciation, enabling cross-word comparison, but does not model liaison, stress, rhythm or prosody.
+### Graded sound costs
 
-**Known limits:** Fixed handcrafted phonological features are a useful graded baseline but only a rough model of human phonetic perception. The chosen first CMU pronunciation is mostly US English; dialects, alternative readings, unstressed vowels and neologisms may differ. OOV words raise an explicit exception rather than secretly falling back to spelling. The custom pair scores depend on these stated design choices; they are not library-provided metrics.
+Let a change from one sound to another have a cost between 0 and 1:
 
-## 4. Required numeric scores (computed by the included Python implementation)
+| Change | Cost |
+| --- | --- |
+| Identical sounds | 0 |
+| Insert or delete a sound | 1 |
+| Vowel ↔ consonant | 1 |
+| Two vowels | min(0.95, 0.20 + 0.16 × height difference + 0.14 × backness difference) |
+| Two consonants | min(1, 0.20 + 0.35 × [manner differs] + 0.25 × [place differs] + 0.20 × [voicing differs]) |
 
-| Pair | ARPAbet transcription | Weighted distance D | Normalized similarity S |
-|---|---|---:|---:|
+*Manner* is how the air flows (a stop such as T, a hiss such as S), *place* is where in the mouth the sound is made, and *voicing* is whether the voice box buzzes. For example, T → D costs 0.40 (only voicing differs), AE → IH costs 0.52 (two steps in tongue height), and T → SH costs 0.80 (manner and place both differ). The vowel coordinates are hand-assigned categories, not measured acoustic data.
+
+### Alignment and score
+
+The distance D between two pronunciations is the cheapest total cost of turning one into the other with swaps, insertions and deletions (a weighted Levenshtein distance, computed by dynamic programming in O(mn) time). It is converted to a similarity:
+
+**S = max(0, 1 − D / max(m, n))**, where m and n are the numbers of sounds.
+
+S = 1 means identical sounds and S = 0 means nothing alike on this scale. S is a ranking score, not a calibrated measure of human perception.
+
+### Why this method was expected to give adequate results
+
+This is a design rationale, not a measured result.
+
+- **Pronunciation, not spelling.** Puns depend on sound. *Night* and *knight* are spelled differently but identical in ARPAbet, so spelling-based matching would miss them and would also match look-alikes that sound different.
+- **Graded costs.** Real substitutions differ in size: T and D differ in one feature and T and SH in two. A yes/no match cannot express that, and a graded cost can.
+- **Edit distance.** Puns often change, add or drop a sound (*drum* / *drama*), and alignment handles words of different lengths. Normalizing by the longer word keeps short and long pairs on the same 0–1 scale.
+- **Transparent.** Every score can be traced to specific sounds, which suits an exploratory baseline.
+- **Sound proposes, meaning decides.** Sound similarity is easy to measure but says nothing about humor. Because the Project 1 checks make the final call, a sound-based false alarm should be caught at the next stage.
+
+### Known limits of the method
+
+- The cost weights and vowel positions were chosen by hand and have **not** been validated against human similarity ratings.
+- The 0.70 retrieval cutoff is exploratory and was not tuned.
+- Only the first, mostly US English, CMU pronunciation is used. Dialects, stress, rhythm and invented words are not modelled.
+- Retrieval is limited to words in the dictionary.
+
+## Required pair scores
+
+Computed by `phonetics.py` and saved in `required_pairs.csv`.
+
+| Pair | Sounds | Distance D | Similarity S |
+| --- | --- | ---: | ---: |
 | cat / cad | K AE T / K AE D | 0.40 | 0.8667 |
 | cat / cash | K AE T / K AE SH | 0.80 | 0.7333 |
 | drum / drama | D R AH M / D R AA M AH | 1.50 | 0.7000 |
@@ -55,49 +88,103 @@ The normalized score is **S(A,B) = max(0, 1 − D(m,n)/max(m,n))**, between 0 (c
 | bat / pat | B AE T / P AE T | 0.40 | 0.8667 |
 | pat / pit | P AE T / P IH T | 0.52 | 0.8267 |
 
-These scores preserve meaningful contrasts: /t/ and /d/ are the same manner/place and differ in voicing, while /t/ and /ʃ/ differ more; `knight` and `night` are homophones. The word `drama` differs from `drum` in both vowel quality and a final additional syllable, reflected in a smaller similarity.
+The ordering matches the sound differences. A single voicing change (cat/cad, bat/pat) scores higher than a change in both manner and place (cat/cash). Knight/night scores 1.0 because the silent *k* adds no sound. Drum/drama scores lower because a vowel changes and a whole sound is added.
 
-## 5. Analysis of instructor-provided examples (qualitative manual judgments)
+## Qualitative analysis of five probe texts
 
-**(A) “When the band broke up, it wasn’t drama — it was just drum!”** Candidate: drum / drama; S = 0.7000. The band and word *drum* provide a music context; *drama* suggests interpersonal conflict. However, “it was just drum” is syntactically unnatural and does not itself explain the breakup. **Judgment: weak/uncertain phonetic joke**, not an unqualified success. An independent rater should decide whether the incongruity is resolved.
+The first three are the instructor's. The last two were written by the team and are **not** instructor-provided. Judgments are manual and are not classifier predictions.
 
-**(B) “Why did the cat stop dating the cad? Because she realized he way only purr-suing her for his own gain!”** Candidate: cat / cad; S = 0.8667. The cat and cad form a nearby pair, but the **central pun** is “purr-suing” versus “pursuing”: an animal-associated purr is blended into the verb pursuing. The supplied phrase “he way” appears to be a typo for “he was”; the quoted source text should remain unaltered in the test set. **Judgment: plausible phonetic/compositional joke** supported by feline context and the dating scenario; the cat/cad pair alone does not establish the joke. The novel “purr-suing” spelling is OOV in standard CMU and needs an explicit pronunciation/segmentation strategy before automatic scoring.
+| # | Text | Pair | S | Judgment |
+| --- | --- | --- | ---: | --- |
+| 1 | "When the band broke up, it wasn't drama — it was just drum!" | drum / drama | 0.7000 | **Weak / uncertain.** Music context and a breakup fit, but "it was just drum" is unnatural and does not explain the breakup. |
+| 2 | "Why did the cat stop dating the cad? Because she realized he way only purr-suing her for his own gain!" | cat / cad | 0.8667 | **Plausible joke.** The pun is *purr-suing* / *pursuing*, supported by the feline dating scenario. The cat/cad score is not the reason. "He way" is read as a typo for "he was". |
+| 3 | "Why did the cat start working at a bank? Because she wanted to turn her cat-nap into cash." | cat / cash | 0.7333 | **Weak / unsupported.** Cat-nap fits the animal theme and cash fits the bank, but no sound-based reading explains why a nap becomes money. |
+| 4 | "My broker offered to help me up the mountain with an asset." | ascent / asset | 0.7320 | **Weak / unsupported.** Mountain imagery cues *ascent* and finance cues *asset*, but nothing establishes an intentional substitution. |
+| 5 | "The school wanted principles in the office. Three rules to get a job. None has returned the parent's call." | principal / principles | 0.9000 | **Plausible joke.** School context cues *principal*, and the unanswered calls turn the rulebooks into administrators who cannot do the job. Independent human ratings are still needed. |
 
-**(C) “Why did the cat start working at a bank? Because she wanted to turn her cat-nap into cash.”** Candidate: cat / cash; S = 0.7333. Cat-nap supports the animal theme and cash the bank theme, but they do not provide an evident sound-based substitution whose alternate reading explains why sleeping becomes money. **Judgment: weak/unsupported as a phonetic joke on the supplied wording**; mere similarity between *cat* and *cash* is insufficient.
+Reading across the five, the weak cases score 0.70–0.73 and the plausible ones 0.87 and 0.90. That pattern is only five hand-judged examples, so it is a suggestion, not a finding. Probe 2 shows why: it is plausible because of *purr-suing*, not because its cat/cad score is high.
 
-This deliberately separates **phonetic score** from **comic-connection decision**, avoiding inflated results on instructor prompts.
+**About *purr-suing*.** The scorer splits text on non-letters, so *purr-suing* would be read as the two dictionary words *purr* and *suing*, joined. That likely gives a sound very close to *pursuing*, but this was **not run** for the report, and the required results score only cat/cad. Words that are truly absent from the dictionary raise an error and are skipped by the retrieval function.
 
-## 6. New stimuli: 23 positives and 23 negatives
+Probes 4 and 5 are not in `evaluation.csv` or the earlier submitted report, which list only three probes. Their scores were checked by hand (ascent/asset D = 1.34; principal/principles D = 1, one added sound).
 
-The attached `evaluation.csv` contains **23 intended positive sound-play jokes** and **23 parallel negative examples**. The negative sentence for each pair reports that the two expressions appeared in a dictionary pronunciation comparison: the utterance pair is equally similar, but there is no surprise, incompatible interpretation, or resulting joke. This is a controlled test of the principle that *sound resemblance alone must not trigger a positive label*.
+## Interpretation of results
 
-The three instructor examples appear as an **additional three separate probes**, producing **49 total records**, not 49 scored automatic classification outcomes. The 23 intended jokes are authored examples and some may be less humorous or linguistically natural than others. A human annotation/quality pass, preferably blind to the expected label, is a next step before valid accuracy/F1 reporting.
+The observations below rest on six computed pairs, five hand-judged probes and an authored dataset. They are observations and hypotheses, not conclusions.
 
-## 7. Integration and evaluation protocol
+### What works
 
-1. Run the original Project 1 input, candidate selection, semantic analysis and age checks unchanged for the old homograph corpus.
-2. For new texts, identify salient words and potential subword expressions; generate similar-pronunciation candidates with CMU plus a documented G2P/segmentation fallback for non-dictionary wordplay.
-3. Calculate continuous phonetic S and retain top K above a prespecified threshold; never classify a joke using S alone.
-4. For each pair, collect two reading-specific context quotes and ask whether the alternate reading resolves a surprising action, answer, or mismatch. Reject literal comparisons.
-5. Predict `semantic`, `phonetic`, `mixed`, `non_joke`, or `uncertain`, with a short evidence trace; separately rate age comprehension and content suitability.
-6. Freeze the prompts, threshold, and dataset before scoring. Evaluate each component separately: retrieval recall@K; scores on homophones and near pairs; semantic connection accuracy on negative pairs; final joke precision/recall/F1 and confusion matrix; age calibration only with ground truth evidence.
+- **The graded score ranks sound differences sensibly.** A single voicing change (cat/cad, bat/pat, 0.8667) scores above a change in both manner and place (cat/cash, 0.7333), and homophones score 1.0. A yes/no match would call most of these pairs simply "different".
+- **Separating sound from meaning gives a sensible division of labour.** Sound finds candidates cheaply, and the Project 1 checks decide whether a candidate is a joke.
 
-**What is completed:** exact documented sound formula; executable scoring and candidate-ranking functions; six required computed comparisons; qualitative three-case analysis; 23 positive and 23 negative stimuli; reuse and documentation of Project 1 methods and existing results. **What remains:** fully automatic extraction/segmentation for novel puns, integration into the original LLM semantic judge, and a blind Project 2 classification run. Consequently this submission makes no unverified new classifier accuracy claim.
+### What does not work, and why
 
-## 8. How to reproduce
+- **Sound similarity alone does not identify jokes.** Cat/cash (0.7333) and ascent/asset (0.7320) are retrievable candidates but weak jokes. A joke needs a second reading that the *context* supports and that explains the punchline, and the score contains no information about context. This is the main finding, and it is why the Project 1 checks are retained.
+- **The score can mislead in both directions.** Cat/cad scores high, but the joke works because of *purr-suing*, a pun the cat/cad score never sees. Drum/drama scores 0.70, yet it is weak because of unnatural grammar. In both cases the cause lies outside what the phonetic score measures.
+- **The graded score is untested on most of the dataset.** All 46 positive and negative records are exact homophones (S = 1.0), so the data cannot show whether similarity separates jokes from non-jokes. Five probes are too few to say.
+- **The negatives may be too easy.** They all use one template, so a classifier could separate them by wording rather than by understanding, which would overstate success.
+- **Plausible jokes scored higher than weak ones in the probes** (0.87 and 0.90 against 0.70–0.73), but with five examples this may be chance. Principal/principles also scores highly partly because it is a long word pair with one added sound, which the length-normalized score rewards.
 
-Python with `cmudict` installed:
+### Likely reasons for failures, and how each could be checked
+
+These are untested hypotheses.
+
+| Possible reason | How to check |
+| --- | --- |
+| Hand-chosen weights and vowel positions do not match human judgments of similarity | Compare scores with human similarity ratings and tune the weights on held-out data |
+| The 0.70 cutoff is arbitrary and lets in weak candidates | Measure retrieval recall and precision at several cutoffs on labelled data |
+| One US English pronunciation per word misses other readings | Compare scores using alternative pronunciations |
+| Invented puns such as *purr-suing* fall outside the dictionary or are split into separate words | Score *purr-suing* / *pursuing* directly and test words that are not in the dictionary |
+| Authored labels and a single negative template inflate apparent success | Have blind annotators label the texts and vary the negative templates |
+
+## Dataset
+
+`evaluation.csv` has **49 records**:
+
+| Class | Count | Description |
+| --- | ---: | --- |
+| Positive (P01–P23) | 23 | Authored sound-play jokes, each built on a homophone pair |
+| Negative (N01–N23) | 23 | Matched literal sentences with the same word pair |
+| Supplied probe (S24–S26) | 3 | The instructor's three texts |
+
+Each negative has the form *"The dictionary exercise listed "A" and "B" as two entries to compare for pronunciation."* It keeps the pair and its sound similarity but removes the comic reinterpretation. This tests the principle that **sound resemblance alone must not trigger a positive label**.
+
+**Important limits of the dataset:**
+
+- **Labels are authored intentions**, not independent annotations or classifier outputs. Some jokes may be less funny or natural than others.
+- **Every one of the 23 positive and 23 negative pairs is an exact homophone, with similarity 1.0.** The six required pairs and the three probes supply all of the graded range. As a result, the 46 positive and negative records do not exercise the graded score at all, and similarity does not separate positives from negatives in this data.
+- The negatives share one template, so a model could separate them by wording alone rather than by understanding.
+- The five-probe sample and the six required pairs are too small for statistical claims.
+- The stored cat/cad text reads "he was"; the assignment and slides read "he way".
+
+A fuller assessment against the Klie et al. quality framework and the Mahowald et al. formal/functional competence distinction is in `DATASET_QUALITY_AND_COMPETENCE_ANALYSIS.md`.
+
+## Evidence and limits
+
+- **From Project 1 (not rerun):** 50 authored texts, 20 intended jokes and 30 non-jokes. 18 jokes were accepted, 30 of 30 non-jokes were rejected, one joke was rejected and one was uncertain. Accuracy was 96.0%, precision 100%, recall 90%, F1 94.74%. A majority-class baseline gets 60%. These come from the saved Project 1 files on an authored collection, not an independent benchmark. Age checks at 5, 8, 12, 16 and 30 were also saved and remain provisional, with no verified acquisition ages.
+- **New in Project 2:** a runnable phonetic module, six computed required scores, five qualitatively judged probes, and a 49-record dataset.
+- **Not done:** automatic extraction of novel puns, integration with the Project 1 language-model judge, a blind classification run, validation of the weights against human ratings, and reporting of accuracy or F1 for Project 2.
+
+## Next steps
+
+1. Connect the phonetic candidates to the Project 1 meaning, evidence and incongruity checks, and freeze prompts, threshold and dataset before scoring.
+2. Validate the similarity scores against human similarity ratings and tune the weights and the 0.70 cutoff on held-out data.
+3. Score the *purr-suing* / *pursuing* pair and add handling for words that are not in the dictionary.
+4. Add near-homophone positives and negatives so the graded score is actually tested, vary the negative templates, and have blind annotators label the dataset.
+5. Evaluate retrieval recall at K, the semantic connection on negative pairs, and final precision, recall and F1 with a confusion matrix.
+
+## How to reproduce
 
 ```bash
 pip install cmudict
-python phonetics.py
-python build_evaluation.py
+python phonetics.py          # prints the six pair scores
+python build_evaluation.py   # rebuilds required_pairs.csv and evaluation.csv
 ```
 
-Run from the `CNIT519_Project2` folder. The first command prints the six pair scores; the second reconstructs `required_pairs.csv` and `evaluation.csv`. Compare the generated files to the bundled CSVs. The original Project 1 files are retained in the independently supplied Project 1 archive; this submission does not overwrite them.
+Run from the `CNIT519_Project2` folder and compare the output with the bundled CSVs.
 
-## 9. Reference resources
+## References
 
-- CMU Pronouncing Dictionary, Carnegie Mellon University, ARPAbet word-to-phone lexicon (accessed locally through Python `cmudict`).
-- Levenshtein-style dynamic programming, adapted here with author-defined phoneme-feature substitution penalties; equations fully specified in Section 3.
-- Original supplied CNIT519 Project 1 archive: `report.md`, `request_llm_procedure.md`, `corpus.md`, and saved predictions. All reported Project 1 statistics originate from those saved files.
+- CMU Pronouncing Dictionary, Carnegie Mellon University, accessed through the Python `cmudict` package.
+- Levenshtein-style dynamic programming, adapted with author-defined phoneme-feature substitution costs as specified above.
+- CNIT 519 Project 1 report and saved files, the source of every Project 1 figure.
